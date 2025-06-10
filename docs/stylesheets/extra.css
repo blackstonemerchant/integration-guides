@@ -20,20 +20,20 @@
   height: 100% !important;
 }
 
-/* Custom red theme enhancements */
+/* Custom theme enhancements */
 :root {
-  --md-primary-fg-color: #d32f2f;
-  --md-primary-fg-color--light: #ff5252;
-  --md-primary-fg-color--dark: #b71c1c;
-  --md-accent-fg-color: #ff1744;
+  --md-primary-fg-color: #b01d57;
+  --md-primary-fg-color--light: #d4477a;
+  --md-primary-fg-color--dark: #8a1542;
+  --md-accent-fg-color: #b01d57;
 }
 
 /* Dark theme specific customizations */
 [data-md-color-scheme="slate"] {
-  --md-primary-fg-color: #ef5350;
-  --md-primary-fg-color--light: #ff8a80;
-  --md-primary-fg-color--dark: #c62828;
-  --md-accent-fg-color: #ff5252;
+  --md-primary-fg-color: #b01d57;
+  --md-primary-fg-color--light: #c9326a;
+  --md-primary-fg-color--dark: #8a1542;
+  --md-accent-fg-color: #b01d57;
 }
 
 /* Enhanced navigation styling */
