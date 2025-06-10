@@ -105,7 +105,7 @@ Requests can fail and the server will return a specific response code to provide
 
 ### GetPaymentLink
 
-**Endpoint URL:** https://services.bmspay.com/api/PaymentLinks/GetPaymentLinkById  
+**Endpoint URL:** <https://services.bmspay.com/api/PaymentLinks/GetPaymentLinkById>  
 **HTTP Method:** GET  
 **Description:** This endpoint will look for a Payment Link with the specified Id or Invoice Number
 
@@ -131,7 +131,7 @@ The 404 error code in this endpoint is triggered if there isn't a Payment with t
 
 You should create the request like:
 
-```
+```http
 method: GET
 url: "https://services.bmspay.com/api/PaymentLinks/GetPaymentLink?id=aa11-bb22-cc33-dd44-ee55"
 body: {
@@ -182,7 +182,7 @@ If none of the Payment Links have the specified Id or Invoice Number then the re
 
 ### AddPaymentLink
 
-**Endpoint URL:** https://services.bmspay.com/api/PaymentLinks/AddPaymentLink  
+**Endpoint URL:** <https://services.bmspay.com/api/PaymentLinks/AddPaymentLink>  
 **HTTP Method:** Post  
 **Description:** This endpoint creates a new Payment Link
 
@@ -208,7 +208,7 @@ The 506 error code in this endpoint is triggered by an invalid amount format.
 
 You should create the request like:
 
-```
+```http
 method: POST
 url: "https://services.bmspay.com/api/PaymentLinks/AddPaymentLink"
 body: {
