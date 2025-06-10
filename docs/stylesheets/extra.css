@@ -1,0 +1,174 @@
+/* Custom styles for Blackstone documentation */
+
+/* Hide logo completely */
+.md-header__button.md-logo,
+.md-logo {
+  display: none !important;
+}
+
+/* Align header title properly */
+.md-header__title {
+  display: flex !important;
+  align-items: center !important;
+  margin-left: 0.8rem !important;
+  line-height: 1.2 !important;
+}
+
+.md-header__ellipsis {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+/* Custom red theme enhancements */
+:root {
+  --md-primary-fg-color: #d32f2f;
+  --md-primary-fg-color--light: #ff5252;
+  --md-primary-fg-color--dark: #b71c1c;
+  --md-accent-fg-color: #ff1744;
+}
+
+/* Dark theme specific customizations */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #ef5350;
+  --md-primary-fg-color--light: #ff8a80;
+  --md-primary-fg-color--dark: #c62828;
+  --md-accent-fg-color: #ff5252;
+}
+
+/* Enhanced navigation styling */
+.md-nav__title {
+  font-weight: 600;
+}
+
+.md-nav__item--active > .md-nav__link {
+  color: var(--md-accent-fg-color);
+}
+
+/* Enhanced code blocks */
+.highlight pre {
+  border-radius: 8px;
+}
+
+/* Grid cards styling */
+.grid.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.grid.cards > div {
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.grid.cards > div:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Tab content styling */
+.tabbed-set {
+  margin: 1rem 0;
+}
+
+/* API endpoint styling */
+.api-endpoint {
+  background: var(--md-code-bg-color);
+  border-left: 4px solid var(--md-primary-fg-color);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Status code styling */
+.status-success {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.status-error {
+  color: #f44336;
+  font-weight: bold;
+}
+
+/* Custom admonition icons */
+.md-typeset .admonition.api {
+  border-color: #2196f3;
+}
+
+.md-typeset .admonition.api > .admonition-title::before {
+  background-color: #2196f3;
+  mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+PC9zdmc+");
+}
+
+/* Better spacing for lists in tables */
+.md-typeset table td ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+/* Highlight important parameters */
+.param-required {
+  color: var(--md-accent-fg-color);
+  font-weight: bold;
+}
+
+/* Response code styling */
+.response-code {
+  font-family: var(--md-code-font);
+  background: var(--md-code-bg-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+/* Custom header styling */
+.md-header[data-md-state="shadow"] {
+  box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.1), 0 0.4rem 0.8rem rgba(0, 0, 0, 0.2);
+}
+
+/* Footer customization */
+.md-footer-meta {
+  background-color: var(--md-footer-bg-color--dark);
+}
+
+/* Sidebar improvements */
+.md-sidebar--secondary {
+  order: 2;
+}
+
+/* Table of Contents styling */
+.md-nav--secondary .md-nav__title {
+  color: var(--md-primary-fg-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.md-nav--secondary .md-nav__link {
+  font-size: 0.85rem;
+}
+
+.md-nav--secondary .md-nav__link--active {
+  color: var(--md-accent-fg-color);
+  font-weight: 500;
+}
+
+/* Better focus states with red theme */
+.md-nav__link:focus,
+.md-nav__link:hover {
+  color: var(--md-accent-fg-color);
+}
+
+/* Custom scrollbar for dark theme */
+[data-md-color-scheme="slate"] ::-webkit-scrollbar-thumb {
+  background-color: var(--md-primary-fg-color--dark);
+}
+
+[data-md-color-scheme="slate"] ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--md-primary-fg-color);
+} 
