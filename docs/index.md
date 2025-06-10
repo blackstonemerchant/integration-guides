@@ -14,6 +14,13 @@ Choose your integration method from the navigation menu to get started with step
 - **Developer Friendly**: SDKs, code examples, and testing tools
 - **Real-time Status**: Webhooks and status updates for payment tracking
 
+## Developer Resources
+
+- **[API Documentation](https://documentation.bmspay.com/index.html)**
+- **[API Status Page](https://blackstone.betteruptime.com/)**
+- **[.NET NuGet Package](https://www.nuget.org/packages/BmsPayClient)**
+- **[WooCommerce Plugin](https://app.blackstoneonline.com/plugins/bpayd-woocommerce-plugin-v4.5.8.zip)**
+
 ## Support
 
 Need help with your integration?
