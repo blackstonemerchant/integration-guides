@@ -1,7 +1,7 @@
 [project]
-name = "blackstone-integration-guides"
+name = "bpayd-integration-guides"
 version = "1.0.0"
-description = "Developer guides for Blackstone payment integration services"
+description = "Developer guides for Bpayd payment integration services"
 readme = "readme.md"
 requires-python = ">=3.12"
 

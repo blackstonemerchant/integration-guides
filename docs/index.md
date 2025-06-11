@@ -1,4 +1,4 @@
-# Blackstone Integration Guides
+# Bpayd Integration Guides
 
 Welcome to the comprehensive developer documentation for Blackstone Merchant Services payment integration services. This documentation provides detailed guides, API references, and implementation examples to help you integrate Blackstone payment solutions into your applications.
 

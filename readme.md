@@ -1,6 +1,6 @@
-# Blackstone Payment Integration Guides
+# Bpayd Integration Guides
 
-📚 Developer documentation for Blackstone payment integration services.
+📚 Developer documentation for Bpayd payment integration services.
 
 ## 🚀 Quick Start
 
