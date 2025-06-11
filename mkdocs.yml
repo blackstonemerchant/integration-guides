@@ -1,7 +1,7 @@
-site_name: Blackstone Integration Guides
+site_name: Bpaid Integration Guides
 site_description: Developer guides for Blackstone payment integration services
 site_author: Blackstone Merchant Services, Inc.
-site_url: https://blackstonemerchant.github.io/integration-guides
+site_url: https://integration-guides.blackstoneonline.com
 
 theme:
   name: material
