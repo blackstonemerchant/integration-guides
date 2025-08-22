@@ -13,6 +13,7 @@ Choose your integration method from the navigation menu to get started with step
 - **Security First**: 3D Secure authentication and PCI compliance
 - **Developer Friendly**: SDKs, code examples, and testing tools
 - **Real-time Status**: Webhooks and status updates for payment tracking
+- **Sandbox Environment**: Test and simulate transactions in a safe, isolated environment
 
 ## Developer Resources
 
