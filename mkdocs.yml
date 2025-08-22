@@ -85,6 +85,7 @@ nav:
   - Payment Links: payment-links.md
   - ATH Mobile: ath-mobile-payment-button.md
   - 3D Secure: three-domain-secure.md
+  - WooCommerce Plugin: woocommerce-plugin.md
 
 extra:
   social:
