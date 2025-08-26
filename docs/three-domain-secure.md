@@ -16,7 +16,7 @@ The 3DS integration process involves:
 
 Make a request to the Blackstone API to obtain an ApiKey and a Token, which are necessary for the 3DS Integrator service. It is recommended to make this request from the server side for increased security.
 
-**POST:** <https://services.bmspay.com/api/auth/tokenthreeds>
+**POST:** [https://services.bmspay.com/api/auth/tokenthreeds](https://services.bmspay.com/api/auth/tokenthreeds)
 
 **Sample Body:**
 
@@ -86,16 +86,26 @@ Add 3DS attributes to your payment form inputs to enable automatic data collecti
 
 ### Step 4: Include SecureData in Payment Requests
 
-After the 3DS challenge completes successfully (status: "Y"), the callback will provide an `authenticationValue` containing the SecureData. Include this SecureData in your Blackstone payment API requests.
+After the 3DS challenge completes successfully (status: "Y" or "A"), the callback will provide an `authenticationValue` containing the SecureData. Include this SecureData in your Blackstone payment API requests.
 
 **Key Response Properties from 3DS Challenge:**
 
-- **status**: "Y" (passed), "N/C/U" (failed)
+- **status**: "Y" (passed) or "A" (attempted; treated as successful), "N/C/U" (failed)
 - **authenticationValue**: Contains SecureData (when successful)
+
+Note: If you encounter the message "No result found for transaction as yet", this is not a validation error. It is emitted by the 3DS library as part of its internal polling flow while awaiting a final outcome. You should ignore this specific message and continue processing normally.
 
 ### Step 5: Testing
 
 Use the test cards provided in the [3DS Integrator Test Cards Documentation](https://docs.3dsintegrator.com) to verify your integration works correctly across different scenarios.
+
+## Go-Live (Production Domains)
+
+**Important**: Before going live, you must contact the Blackstone team to configure your production domains in the 3DS service. You must provide the complete domain name(s) where your checkout or payment form is hosted. Each hostname must be configured explicitly; providing only the base domain is not sufficient. Examples that must be configured individually:
+
+- `example.com`
+- `www.example.com`
+- `app.example.com`
 
 ## Summary
 
