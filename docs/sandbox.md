@@ -10,16 +10,18 @@ From the API, you can perform transactions using the same credentials as live tr
 
 ### Transaction Types
 
-The following transaction types are currently supported for testing in the sandbox:
+All standard transaction types are now fully supported for testing in the sandbox. Use them exactly as you would in production, marking requests with `IsTest: true`:
 
 | Transaction Type | Status |
 |------------------|--------|
 | Sale             | Ready  |
 | Force Sale       | Ready  |
-| PreAuth          | Coming Soon |
-| Complete         | Coming Soon |
-| Refund           | To Be Implemented |
-| Void             | To Be Implemented |
+| PreAuth          | Ready  |
+| Complete         | Ready  |
+| Refund           | Ready  |
+| Void             | Ready  |
+
+If you encounter any discrepancies between sandbox and production responses, report them to support please.
 
 ## Portal Testing
 
