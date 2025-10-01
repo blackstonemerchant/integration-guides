@@ -12,8 +12,8 @@ dependencies = [
     "pymdown-extensions>=10.15",
 ]
 
-[tool.uv]
-dev-dependencies = ["mkdocs-material[imaging]>=9.6.14", "ruff>=0.11.13"]
+[dependency-groups]
+dev = ["mkdocs-material[imaging]>=9.6.14", "ruff>=0.11.13"]
 
 [build-system]
 requires = ["hatchling"]

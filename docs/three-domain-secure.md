@@ -84,14 +84,36 @@ Add 3DS attributes to your payment form inputs to enable automatic data collecti
 
 ## Blackstone Payment Processing
 
-### Step 4: Include SecureData in Payment Requests
+### Step 4: Include SecureData and SecureTransactionId in Payment Requests
 
-After the 3DS challenge completes successfully (status: "Y" or "A"), the callback will provide an `authenticationValue` containing the SecureData. Include this SecureData in your Blackstone payment API requests.
+After the 3DS challenge completes successfully (status: "Y" or "A"), the callback will provide an `authenticationValue` containing the SecureData. Include this SecureData in your Blackstone payment API requests. In addition, you must also send the `SecureTransactionId`, which corresponds to the 3DS transaction identifier exposed by the library as `threeDsTransactionId` on the ThreeDS instance.
+
+The `threeDsTransactionId` property is initially `null` immediately after instantiating the ThreeDS object. Once the challenge flow completes and SecureData (`authenticationValue`) is available, `threeDsTransactionId` will be populated. Capture it at the same time you read the SecureData value.
+
+Example (simplified):
+
+```html
+<script src="https://cdn.3dsintegrator.com/threeds.2.2.20231219.min.js"></script>
+<script>
+  var tds = new ThreeDS("billing-form", "<ApiKey>", "<Token>", { showChallenge: true }, function (result) {
+    // result.authenticationValue => SecureData
+    if (result && (result.status === 'Y' || result.status === 'A')) {
+      const secureData = result.authenticationValue; // send to Blackstone
+      const secureTransactionId = tds.threeDsTransactionId; // now populated
+      // Include BOTH secureData and secureTransactionId in your payment API request body
+      // e.g., { SecureData: secureData, SecureTransactionId: secureTransactionId, ... }
+    }
+  });
+</script>
+```
+
+Sending `SecureTransactionId` allows Blackstone Portal users to later view detailed 3DS logs for that transaction (useful for dispute resolution, fraud analysis, or support investigations).
 
 **Key Response Properties from 3DS Challenge:**
 
 - **status**: "Y" (passed) or "A" (attempted; treated as successful), "N/C/U" (failed)
 - **authenticationValue**: Contains SecureData (when successful)
+- **threeDsTransactionId / SecureTransactionId**: 3DS transaction identifier set on the ThreeDS instance (`tds.threeDsTransactionId`) once challenge completes; send this value to enable log retrieval.
 
 Note: If you encounter the message "No result found for transaction as yet", this is not a validation error. It is emitted by the 3DS library as part of its internal polling flow while awaiting a final outcome. You should ignore this specific message and continue processing normally.
 
@@ -112,11 +134,11 @@ Use the test cards provided in the [3DS Integrator Test Cards Documentation](htt
 **Blackstone responsibilities:**
 
 - Provide 3DS authentication credentials (Step 1)
-- Process payments with SecureData (Step 4+)
+- Process payments with SecureData and SecureTransactionId (Step 4+)
 
 **3DS Integrator responsibilities:**
 
 - Client-side authentication challenge (Steps 2-3)
-- Generate SecureData upon successful authentication
+- Generate SecureData and populate threeDsTransactionId upon successful authentication
 
 **External documentation**: For complete 3DS implementation details, including advanced configurations and troubleshooting, refer to [docs.3dsintegrator.com](https://docs.3dsintegrator.com).
