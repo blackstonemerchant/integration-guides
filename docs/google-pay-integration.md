@@ -213,11 +213,6 @@ The Google Pay token you receive on the front end is a JSON payload. **Before se
   "Token": "<BASE64_ENCODED_GOOGLE_PAY_TOKEN>",
   "UserTransactionNumber": "UNIQUE_TXN_123456",
 
-  "CurrencyCode": "USD",
-  "CustomerEmail": "customer@example.com",
-  "IpAddress": "203.0.113.10",
-  "Source": 1,
-  "PosCode": 0,
   "IsTest": true
 }
 ```
@@ -239,3 +234,5 @@ Integrating Google Pay with Bpayd API involves:
 3. **Handle response**: Process success/failure and update your application accordingly
 
 The key requirement is to **Base64-encode the Google Pay token** before sending it to the Bpayd API. All other parameters follow standard Bpayd API conventions.
+
+If you also need to support Apple Pay, see the [Apple Pay Integration Guide](apple-pay-integration.md).
