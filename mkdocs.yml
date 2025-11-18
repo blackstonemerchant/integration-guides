@@ -83,6 +83,7 @@ nav:
   - Home: index.md
   - Sandbox: sandbox.md
   - Payment Links: payment-links.md
+  - Google Pay: google-pay-integration.md
   - ATH Mobile: ath-mobile-payment-button.md
   - 3D Secure: three-domain-secure.md
   - WooCommerce Plugin: woocommerce-plugin.md
