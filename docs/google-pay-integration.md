@@ -59,6 +59,9 @@ At a high level, responsibilities are split as follows:
 
 ## Front-End Implementation
 
+> [!NOTE]
+> **Disclaimer**: The following frontend implementation is provided as a **reference guide**. Your actual implementation may vary depending on your technology stack (e.g., React, Vue, Angular) and specific application architecture. You should adapt these examples to fit your needs rather than copying them verbatim.
+
 On the front end, you integrate Google Pay using Google’s official Web API. The typical flow is:
 
 1. Load the Google Pay JavaScript library.

@@ -31,7 +31,9 @@ Before you begin, make sure you have:
       - Each domain must be available over HTTPS in production.
 
 - **Supported devices and browsers**:
-      - Apple Pay on the web requires Safari on macOS or iOS, and compatible devices with Apple Pay configured.
+      - **iPhone (iOS 16+)**: Apple Pay works natively in **all browsers** (Safari, Chrome, Edge, Firefox, etc.).
+      - **Mac (macOS)**: Native Apple Pay is available only in **Safari**.
+      - **Other Environments**: On macOS with other browsers (Chrome, Firefox) or on Windows/Linux, the user will see a **QR Code** which they must scan with their iPhone to complete the payment.
 
 For the full Apple Pay on the web requirements and capabilities, see:
 
@@ -76,14 +78,28 @@ At a high level, responsibilities are split as follows:
 
 ## Front-End Implementation
 
-On the front end, you integrate Apple Pay using Apple’s JavaScript API (`ApplePaySession`). At a high level:
+> [!NOTE]
+> **Disclaimer**: The following frontend implementation is provided as a **reference guide**. Your actual implementation may vary depending on your technology stack (e.g., React, Vue, Angular) and specific application architecture. You should adapt these examples to fit your needs rather than copying them verbatim.
 
-1. Check that the environment supports Apple Pay (Safari + compatible device).
-2. Check whether the customer can make payments with Apple Pay.
-3. Show the Apple Pay button.
-4. When the button is clicked, create an `ApplePaySession` with your payment request.
-5. Handle merchant validation (`onvalidatemerchant`) by calling your back-end, which in turn calls Bpayd.
-6. Handle payment authorization (`onpaymentauthorized`), retrieve the Apple Pay token, and send it to your back-end.
+On the front end, you integrate Apple Pay using Apple’s JavaScript API (`ApplePaySession`).
+
+### 1. Import the Apple Pay SDK
+
+You must include the Apple Pay JS SDK in your page. Add the following script tag to your HTML:
+
+```html
+<script src="https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js"></script>
+```
+
+### 2. Implementation Steps
+
+At a high level:
+
+1. **Check for Secure Context**: Apple Pay requires HTTPS (or localhost).
+2. **Wait for API Availability**: The `ApplePaySession` object might load asynchronously.
+3. **Check Payment Capability**: Use `canMakePayments()` to check if the device and browser support Apple Pay.
+4. **Show the Button**: If supported, display the Apple Pay button.
+5. **Handle Session**: Create the session, handle merchant validation, and process the payment.
 
 For full implementation details, follow Apple’s official documentation:
 
@@ -98,117 +114,182 @@ When integrating Apple Pay with Bpayd, your front-end code should:
 - Implement **merchant validation** by sending Apple’s `validationURL` to your back-end so it can call Bpayd’s `ValidateApplePayMerchant`.
 - Implement **payment authorization** by forwarding the Apple Pay token to your back-end, unchanged.
 
-Below is a simplified JavaScript example that illustrates these responsibilities.
+### Robust JavaScript Example
+
+Below is a robust JavaScript example that handles cross-browser support, async loading, and secure context checks.
 
 ```javascript
-// 1. Check Apple Pay availability and show the button
-function initializeApplePay() {
-  if (!window.ApplePaySession) {
-    // Apple Pay is not supported in this browser
-    return;
-  }
-
-  // Check whether the customer can make payments with Apple Pay
-  const canPay = ApplePaySession.canMakePayments();
-  if (!canPay) {
-    return;
-  }
-
-  // Show your Apple Pay button and attach the click handler
-  const button = document.getElementById('applePayButton');
-  if (button) {
-    button.style.display = 'inline-flex';
-    button.addEventListener('click', beginApplePaySession);
-  }
+// 1. Helper: Check if the context is secure (HTTPS or localhost)
+function isSecureApplePayContext() {
+    return location.protocol === 'https:' || location.hostname === 'localhost';
 }
 
-// 2. Create the Apple Pay session with Bpayd-specific configuration
-function beginApplePaySession() {
-  if (!window.ApplePaySession) {
-    return;
-  }
+// 2. Helper: Wait for ApplePaySession to be available (it may load asynchronously)
+function waitForApplePaySession(maxAttempts = 10, delayMs = 300) {
+    return new Promise(resolve => {
+        const attempt = (count) => {
+            if (window.ApplePaySession) {
+                return resolve(true);
+            }
+            if (count >= maxAttempts) {
+                return resolve(false);
+            }
+            setTimeout(() => attempt(count + 1), delayMs);
+        };
+        attempt(0);
+    });
+}
 
-  const totalAmount = /* your computed total amount */ '10.50';
-
-  // The following paymentRequest values (countryCode, currencyCode, supportedNetworks and merchantCapabilities)
-  // must match the configuration agreed with Bpayd.
-  const paymentRequest = {
-    countryCode: 'US',
-    currencyCode: '<Your currency code>', // e.g. "USD"
-    supportedNetworks: ['visa', 'masterCard', 'amex'],
-    merchantCapabilities: ['supports3DS'],
-    total: {
-      label: '<Your Business Name Shown To Customers>',
-      amount: totalAmount,
-    },
-  };
-
-  // Use the highest Apple Pay version supported by your environment
-  const session = new ApplePaySession(3, paymentRequest);
-
-  // Merchant validation: call your back-end so it can call Bpayd
-  session.onvalidatemerchant = function (event) {
-    fetch('/your-backend/apple-pay/validate-merchant', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        validationUrl: event.validationURL,
-        // Optionally include your merchant ID or other identifiers if needed
-      }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        // data should contain the merchant session returned by Bpayd
-        session.completeMerchantValidation(data.result);
-      })
-      .catch(err => {
-        console.error('Apple Pay merchant validation failed:', err);
-        session.abort();
-      });
-  };
-
-  // Payment authorization: forward the Apple Pay token to your back-end
-  session.onpaymentauthorized = function (event) {
-    const rawToken = event.payment.token;
-    // Ensure the token is a JSON string before sending it to your back-end
-    const tokenString = typeof rawToken === 'string'
-      ? rawToken
-      : JSON.stringify(rawToken);
-
-    fetch('/your-backend/apple-pay/process-payment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        applePayToken: tokenString,
-        amount: totalAmount,
-        // Include any other context your back-end needs (order ID, customer ID, etc.)
-      }),
-    })
-      .then(response => response.json())
-      .then(result => {
-        if (result && result.success) {
-          session.completePayment(ApplePaySession.STATUS_SUCCESS);
-        } else {
-          session.completePayment(ApplePaySession.STATUS_FAILURE);
+// 3. Helper: Resolve the supported Apple Pay version
+function resolveApplePayVersion() {
+    if (!window.ApplePaySession) {
+        return null;
+    }
+    if (typeof ApplePaySession.supportsVersion !== 'function') {
+        return 1; // Default to version 1 if supportsVersion is missing
+    }
+    // Check for versions in descending order
+    const versions = [3, 2, 1];
+    for (let i = 0; i < versions.length; i++) {
+        if (ApplePaySession.supportsVersion(versions[i])) {
+            return versions[i];
         }
-      })
-      .catch(err => {
-        console.error('Apple Pay payment failed:', err);
-        session.completePayment(ApplePaySession.STATUS_FAILURE);
-      });
-  };
-
-  session.oncancel = function () {
-    console.info('Apple Pay session cancelled by user.');
-  };
-
-  session.begin();
+    }
+    return null;
 }
+
+// 4. Main Initialization Function
+async function initializeApplePay() {
+    // Security check
+    if (!isSecureApplePayContext()) {
+        console.warn('Apple Pay requires a secure (HTTPS) connection.');
+        return;
+    }
+
+    // Wait for the SDK to load
+    const sessionReady = await waitForApplePaySession();
+    if (!sessionReady) {
+        console.warn('Apple Pay SDK not loaded or not supported in this browser.');
+        return;
+    }
+
+    // Check availability
+    try {
+        const result = ApplePaySession.canMakePayments();
+        
+        // Handle both Promise (newer) and Boolean (older) returns
+        if (result && typeof result.then === 'function') {
+            result.then(function (canPay) {
+                if (canPay) showApplePayButton();
+            }).catch(function (err) {
+                console.error('Apple Pay availability check failed:', err);
+            });
+        } else {
+            if (result) showApplePayButton();
+        }
+    } catch (error) {
+        console.error('Apple Pay availability check failed:', error);
+    }
+}
+
+function showApplePayButton() {
+    const button = document.getElementById('applePayButton');
+    if (button) {
+        button.style.display = 'inline-flex';
+        button.addEventListener('click', beginApplePaySession);
+    }
+}
+
+// 5. Begin Session
+function beginApplePaySession() {
+    if (!window.ApplePaySession) return;
+
+    const version = resolveApplePayVersion();
+    if (!version) {
+        console.error('No supported Apple Pay version found.');
+        return;
+    }
+
+    const totalAmount = '10.50'; // Your computed total
+
+    // Configuration must match Bpayd agreement
+    const paymentRequest = {
+        countryCode: 'US',
+        currencyCode: 'USD',
+        supportedNetworks: ['visa', 'masterCard', 'amex', 'discover'], // Added 'discover'
+        merchantCapabilities: ['supports3DS'],
+        total: {
+            label: 'Your Business Name',
+            amount: totalAmount,
+        },
+    };
+
+    const session = new ApplePaySession(version, paymentRequest);
+
+    // Merchant Validation
+    session.onvalidatemerchant = function (event) {
+        fetch('/your-backend/apple-pay/validate-merchant', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                validationUrl: event.validationURL
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // data.result should be the merchant session object from Bpayd
+            session.completeMerchantValidation(data.result);
+        })
+        .catch(err => {
+            console.error('Merchant validation failed:', err);
+            session.abort();
+        });
+    };
+
+    // Payment Authorization
+    session.onpaymentauthorized = function (event) {
+        const rawToken = event.payment.token;
+        // Ensure token is a JSON string
+        const tokenString = typeof rawToken === 'string' 
+            ? rawToken 
+            : JSON.stringify(rawToken);
+
+        fetch('/your-backend/apple-pay/process-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                applePayToken: tokenString,
+                amount: totalAmount
+            }),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result && result.success) {
+                session.completePayment(ApplePaySession.STATUS_SUCCESS);
+            } else {
+                session.completePayment(ApplePaySession.STATUS_FAILURE);
+            }
+        })
+        .catch(err => {
+            console.error('Payment processing failed:', err);
+            session.completePayment(ApplePaySession.STATUS_FAILURE);
+        });
+    };
+
+    session.oncancel = function () {
+        console.info('Apple Pay session cancelled by user.');
+    };
+
+    session.begin();
+}
+
+// Start initialization
+document.addEventListener('DOMContentLoaded', initializeApplePay);
 ```
 
 All other Apple Pay UI and configuration options (button style, locale, additional line items, etc.) should follow Apple’s guides. The Bpayd-specific requirements are:
 
-- The supported networks should include at least `visa`, `masterCard`, and `amex` (subject to the configuration agreed with Bpayd).
+- The supported networks should include at least `visa`, `masterCard`, `amex`, and `discover` (subject to the configuration agreed with Bpayd).
 - `merchantCapabilities` must include `supports3DS`.
 - You must forward the full Apple Pay `payment.token` payload to your back-end, **unchanged**.
 
