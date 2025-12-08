@@ -1,4 +1,4 @@
-# Google Pay Integration Guide
+# Google Pay™ Integration Guide
 
 ## Overview
 
@@ -14,7 +14,7 @@ The integration involves two main components:
 Before you begin, make sure you have:
 
 - **Bpayd API Credentials**: Provided by Bpayd/Blackstone for your integration:
-
+  
       - `AppKey`: Application Key that uniquely identifies your application
       - `AppType`: Application Type identifier
       - `UserName`: API username
@@ -23,12 +23,28 @@ Before you begin, make sure you have:
       - `cid`: Cashier ID
 
 - **Google Pay configuration from Bpayd**:
+  
       - `merchantId`: `8138048649892127088` (Google Pay merchant configured by Bpayd)
       - `merchantName`: the business name that will be shown to the shopper in Google Pay. You **may set this to your own business name**, as long as it follows Bpayd and Google branding policies.
       - `gatewayMerchantId`: the Payment Processor Merchant ID provided by Bpayd
 
 - **HTTPS**: Google Pay requires a secure connection (HTTPS) for production environments
+
 - **Supported Browser**: Google Pay works in Chrome, Safari, Firefox, and Edge
+
+- **Essential Prerequisites & Policy Compliance**
+  
+  > ### ⚠️ **REQUIRED: Before Starting Integration**
+  > 
+  > All merchants using Bpayd's Google Pay integration **MUST**:
+  > 
+  > * **Accept** the [Google Pay API Terms of Service](https://payments.developers.google.com/terms/sellertos)
+  > * **Adhere** to the [Google Pay and Wallet API Acceptable Use Policy](https://payments.developers.google.com/terms/aup)
+  > * Register in the [Google Pay & Wallet Console](https://pay.google.com/business/console) if you require your own Google `merchantId`
+  > * Confirm acceptance of cards supported by Google and enabled by Bpayd
+  > * Have a secure HTTPS connection (required for production)
+  > 
+  > **These requirements are mandatory and non-negotiable for all implementations.**
 
 ## Integration Flow
 
@@ -47,11 +63,13 @@ The complete Google Pay payment flow consists of these steps:
 At a high level, responsibilities are split as follows:
 
 - **Bpayd provides:**
+  
   - Bpayd API credentials (`AppKey`, `AppType`, `UserName`, `Password`, `mid`, `cid`).
   - Google Pay `merchantId` (`8138048649892127088`).
   - `gatewayMerchantId` (Payment Processor Merchant ID used in `tokenizationSpecification`).
 
 - **Your application is responsible for:**
+  
   - Building the Google Pay client integration (`isReadyToPay`, `loadPaymentData`, button rendering/UX).
   - Calculating the final amount sent in `transactionInfo.totalPrice` and the `currencyCode`.
   - Generating a unique `UserTransactionNumber` for each transaction.
@@ -71,11 +89,37 @@ On the front end, you integrate Google Pay using Google’s official Web API. Th
 5. Render the Google Pay button.
 6. When the user authorizes the payment, obtain the Google Pay payment token and send it to your back-end.
 
-For the full Google Pay implementation details, see:
+Bpayd supports Google Pay integration on the following platforms. Choose your platform and follow the corresponding Google documentation:
 
-- Google Pay Web overview: <https://developers.google.com/pay/api/web/overview>
-- Integrate the Google Pay API: <https://developers.google.com/pay/api/web/guides/setup>
-- Google Pay brand guidelines: <https://developers.google.com/pay/api/web/guides/brand-guidelines>
+If you're integrating Google Pay into an Android application, review these official Google resources:
+
+* **[Google Pay API for Android - Overview](https://developers.google.com/pay/api/android/overview)**
+* **[Android Integration Checklist](https://developers.google.com/pay/api/android/guides/test-and-deploy/integration-checklist)**
+* **[Android Brand Guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines)**
+
+If you're integrating Google Pay on a website, review these official Google resources:
+
+* **[Google Pay API for Web - Overview](https://developers.google.com/pay/api/web/overview)**
+* **[Web Integration Checklist](https://developers.google.com/pay/api/web/guides/test-and-deploy/integration-checklist)**
+* **[Web Brand Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines)**
+* **[Web Integration Setup Guide](https://developers.google.com/pay/api/web/guides/setup)**
+
+The first mention of the service must include the registered trademark: **Google Pay™**.
+
+Merchants **must** follow official Google brand guidelines:
+
+* [Google Pay Android Brand Guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines)
+* [Google Pay Web Brand Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines)
+
+**Requirements:**
+
+* Use only official logos and buttons
+* Do not alter colors, proportions, or design
+* Follow spacing and sizing guidelines
+
+**✅ Correct example:**
+
+> "Provide your customers with fast and secure payments with **Google Pay™**, using official buttons without changes to colors or proportions."
 
 ### Google Pay configuration for Bpayd
 
