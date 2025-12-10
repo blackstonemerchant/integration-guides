@@ -8,6 +8,7 @@
 
 | Version | Date | Download | Notes |
 |--------:|:-----|:--------:|-------|
+| 4.5.48 | 2025-12-10 | [ZIP](/integration-guides/downloads/woocommerce-plugin/blackstone-gateway-4.5.48.zip) | Bug fixes and general improvements. |
 | 4.5.43 | 2025-11-05 | [ZIP](/integration-guides/downloads/woocommerce-plugin/blackstone-gateway-4.5.43.zip) | Plugin Compatibility Fix and Refund Data in Order Notes. |
 | 4.5.41 | 2025-10-22 | [ZIP](/integration-guides/downloads/woocommerce-plugin/blackstone-gateway-4.5.41.zip) | Validate ZipCode. |
 | 4.5.40 | 2025-10-14 | [ZIP](/integration-guides/downloads/woocommerce-plugin/blackstone-gateway-4.5.40.zip) | Center larger 3DS iframe; fix pay button enablement for retry without refresh; show failed 3DS messages in a modal; add billingPostCode and cardHolderName to 3DS verification. |
