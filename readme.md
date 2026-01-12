@@ -21,7 +21,7 @@
    make serve
    ```
 
-   Documentation will be available at <http://127.0.0.1:8000> with live reload.
+   Documentation will be available at <http://127.0.0.1:8000> with hot-reload.
 
 2. **Build for production**:
 
