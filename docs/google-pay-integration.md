@@ -23,12 +23,15 @@ Before you begin, make sure you have:
       - `cid`: Cashier ID
 
 - **Google Pay configuration from Bpayd**:
-  
+
       - `merchantId`: `8138048649892127088` (Google Pay merchant configured by Bpayd)
       - `merchantName`: the business name that will be shown to the shopper in Google Pay. You **may set this to your own business name**, as long as it follows Bpayd and Google branding policies.
       - `gatewayMerchantId`: the Payment Processor Merchant ID provided by Bpayd
 
-- **HTTPS**: Google Pay requires a secure connection (HTTPS) for production environments
+- **Google Pay domains**:
+      - A list of all domains where you will show the Google Pay button (see **Google Pay domain configuration for Bpayd** below).
+      - Each domain must be registered and approved by Bpayd before integration.
+      - All domains must be available over HTTPS in production.
 
 - **Supported Browser**: Google Pay works in Chrome, Safari, Firefox, and Edge
 
@@ -63,17 +66,20 @@ The complete Google Pay payment flow consists of these steps:
 At a high level, responsibilities are split as follows:
 
 - **Bpayd provides:**
-  
+
   - Bpayd API credentials (`AppKey`, `AppType`, `UserName`, `Password`, `mid`, `cid`).
   - Google Pay `merchantId` (`8138048649892127088`).
   - `gatewayMerchantId` (Payment Processor Merchant ID used in `tokenizationSpecification`).
+  - Domain registration and approval for Google Pay integration.
 
 - **Your application is responsible for:**
-  
+
+  - Providing Bpayd with **all domains** where Google Pay will be used (see below).
   - Building the Google Pay client integration (`isReadyToPay`, `loadPaymentData`, button rendering/UX).
   - Calculating the final amount sent in `transactionInfo.totalPrice` and the `currencyCode`.
   - Generating a unique `UserTransactionNumber` for each transaction.
   - Forwarding the Google Pay token to Bpayd exactly as received from Google Pay.
+  - Only implementing Google Pay on domains that have been registered and approved by Bpayd.
 
 ## Front-End Implementation
 
@@ -220,7 +226,35 @@ function processGooglePay() {
 }
 ```
 
-All other Google Pay fields (supported networks, button style, etc.) should be implemented according to Google’s official guides. The Bpayd-specific requirements are the configuration shown in these two calls and that you forward the **unaltered Google Pay payment token** to your back-end.
+All other Google Pay fields (supported networks, button style, etc.) should be implemented according to Google's official guides. The Bpayd-specific requirements are the configuration shown in these two calls and that you forward the **unaltered Google Pay payment token** to your back-end.
+
+## Google Pay domain configuration for Bpayd
+
+Before you can integrate Google Pay on your website, you must provide Bpayd with **all domains** where you intend to show the Google Pay button for approval and registration.
+
+### Domain registration requirements
+
+- You must provide Bpayd with **every domain** where you intend to show the Google Pay button.
+  - Domains must be specified **without protocol and without paths**.
+  - Examples of valid entries:
+    - `example.com`
+    - `store.example.com`
+    - `checkout.example.net`
+  - Invalid examples (do **not** include protocol or subpaths):
+    - `https://example.com`
+    - `example.com/checkout`
+
+- If you use multiple subdomains, you must list **each one explicitly**. Registering only `example.com` is not sufficient if you also use `checkout.example.com` or `shop.example.com`.
+
+- Bpayd will:
+  - Register and approve those domains for use with Google Pay.
+  - Confirm when your domains are ready for integration.
+
+- You must:
+  - Ensure all domains are served over HTTPS in production (required by Google Pay).
+  - Only implement Google Pay on domains that have been approved by Bpayd.
+
+**Important**: Google Pay will only work correctly on domains that have been registered and approved through Bpayd. Make sure to provide your complete list of domains before beginning your integration.
 
 ## Back-End Implementation
 
