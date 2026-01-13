@@ -116,6 +116,7 @@ Merchants **must** follow official Google brand guidelines:
 
 * [Google Pay Android Brand Guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines)
 * [Google Pay Web Brand Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines)
+* **[Visual Examples and Complete Implementation](https://developers.google.com/pay/api/web/guides/brand-guidelines#put-it-all-together)** - Reference examples showing correct button placement and styling
 
 **Requirements:**
 
