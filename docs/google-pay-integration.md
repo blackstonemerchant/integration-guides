@@ -256,6 +256,41 @@ Before you can integrate Google Pay on your website, you must provide Bpayd with
 
 **Important**: Google Pay will only work correctly on domains that have been registered and approved through Bpayd. Make sure to provide your complete list of domains before beginning your integration.
 
+## Required Documentation for Web Integration
+
+When integrating Google Pay on your website, you must provide Blackstone/Bpayd with screenshots of your complete buyflow. These screenshots are required to verify proper implementation and compliance with Google Pay guidelines.
+
+### Required Screenshots
+
+You must submit the following screenshots of your payment flow:
+
+1. **Item Selection Screen**
+   - When a user is browsing an item or service
+   - Shows the product/service selection interface
+
+2. **Pre-Purchase Screen**
+   - When a user is ultimately ready to make a purchase
+   - Shows the final order summary before payment method selection
+
+3. **Payment Method Screen**
+   - When a user selects Google Pay as their payment method
+   - Must clearly show the Google Pay button and payment options
+
+4. **Google Pay API Payment Screen**
+   - When a user is shown the payment info they've saved to Google Pay
+   - **Important**: Android won't allow you to take a screenshot of this screen, so you must take a picture of the screen using another device (camera or phone)
+
+5. **Post-Purchase Screen**
+   - When a user has made a successful purchase
+   - Shows the confirmation or success message
+
+### Submission Guidelines
+
+- Ensure all screenshots clearly show the relevant screen and user interface elements
+- Screenshots should represent the actual production interface (or final staging version)
+- For the Google Pay API payment screen on Android, use a separate device to photograph the screen
+- Submit all screenshots to Blackstone/Bpayd as part of your integration approval process
+
 ## Back-End Implementation
 
 ### API Endpoint
