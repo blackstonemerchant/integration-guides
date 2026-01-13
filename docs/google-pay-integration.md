@@ -116,7 +116,6 @@ Merchants **must** follow official Google brand guidelines:
 
 * [Google Pay Android Brand Guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines)
 * [Google Pay Web Brand Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines)
-* **[Visual Examples and Complete Implementation](https://developers.google.com/pay/api/web/guides/brand-guidelines#put-it-all-together)** - Reference examples showing correct button placement and styling
 
 **Requirements:**
 
@@ -290,6 +289,7 @@ You must submit the following screenshots of your payment flow:
 - Ensure all screenshots clearly show the relevant screen and user interface elements
 - Screenshots should represent the actual production interface (or final staging version)
 - For the Google Pay API payment screen on Android, use a separate device to photograph the screen
+- **Review [Google Pay brand guidelines examples](https://developers.google.com/pay/api/web/guides/brand-guidelines#put-it-all-together) to ensure proper button implementation before submitting screenshots**
 - Submit all screenshots to Blackstone/Bpayd as part of your integration approval process
 
 ## Back-End Implementation
