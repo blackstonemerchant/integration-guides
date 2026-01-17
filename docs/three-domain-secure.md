@@ -35,8 +35,8 @@ Make a request to the Blackstone API to obtain an ApiKey and a Token, which are 
 
 ```json
 {
-  "ApiKey": "7763ffac3f08a0eca618a0f9d77c67c5",
-  "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIzZHNpbnRlZ3JhdG9yX0F1dGhlbnRpY2F",
+  "ApiKey": "...",
+  "Token": "...",
   "ResponseCode": 200,
   "Msg": [
     "Operation Successful"
@@ -112,8 +112,25 @@ Sending `SecureTransactionId` allows Blackstone Portal users to later view detai
 **Key Response Properties from 3DS Challenge:**
 
 - **status**: "Y" (passed) or "A" (attempted; treated as successful), "N/C/U" (failed)
+- **transStatusReason**: Reason code that qualifies the status; evaluate it together with `status`.
 - **authenticationValue**: Contains SecureData (when successful)
 - **threeDsTransactionId / SecureTransactionId**: 3DS transaction identifier set on the ThreeDS instance (`tds.threeDsTransactionId`) once challenge completes; send this value to enable log retrieval.
+
+**Response interpretation:** Always analyze the 3DS response using both `status` and `transStatusReason`. In some cases the status may be `N`, but the `transStatusReason` can indicate a scenario where proceeding is still acceptable at the merchant's discretion. For the full response matrix and recommendations, see the [3DS Integrator response documentation](https://docs.3dsintegrator.com/docs/3ds-response-table-of-content). Note that `transStatusReason` includes a shared set of values, but codes `80+` are network-specific and have different meanings for Visa, Mastercard, and American Express.
+
+### Optional: Verify 3DS Results From Your Backend
+
+If you want to validate the 3DS result on your backend (so you do not rely only on the frontend), you can query the 3DS Integrator API using the 3DS transaction ID (`SecureTransactionId` / `threeDsTransactionId`). Use the same **ApiKey** and **Token** used for the 3DS challenge, but obtain the token directly from your backend (same flow as Step 1). The backend can then verify the transaction using the transaction ID.
+
+**Request example:**
+
+```bash
+curl -X GET "https://api.3dsintegrator.com/v2.2/transaction/{transactionId}/updates" \
+  -H "X-3DS-API-KEY: <ApiKey>" \
+  -H "Authorization: Bearer <Token>"
+```
+
+The response includes status details (including `status` and `transStatusReason`) that you can use for backend verification.
 
 Note: If you encounter the message "No result found for transaction as yet", this is not a validation error. It is emitted by the 3DS library as part of its internal polling flow while awaiting a final outcome. You should ignore this specific message and continue processing normally.
 
