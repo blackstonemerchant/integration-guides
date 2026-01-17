@@ -15,7 +15,7 @@ serve: install ## Start development server with live reload
 	@echo "📝 Auto-reload enabled - edit files and see changes instantly"
 	@echo "❌ Press Ctrl+C to stop the server"
 	@echo ""
-	@uv run mkdocs serve --dev-addr=127.0.0.1:8000
+	@uv run mkdocs serve -a 127.0.0.1:8000 -o -w .
 
 build: install ## Build documentation for production
 	@echo "🏗️  Building Material for MkDocs documentation for production..."

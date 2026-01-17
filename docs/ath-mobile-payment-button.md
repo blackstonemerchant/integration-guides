@@ -23,9 +23,8 @@ Before ATH Mobile appears as a payment option, configure it in the Blackstone po
 
 ### Required Credentials
 
-| Credential | Description | Configuration Location |
-|------------|-------------|----------------------|
-| ATH Mobile Public Token | Your ATH Mobile merchant account public token | Business Settings > Other > Allowed Payment Methods |
+**ATH Mobile Public Token:** Your ATH Mobile merchant account public token  
+*Configure in:* Business Settings > Other > Allowed Payment Methods
 
 ## Implementation
 

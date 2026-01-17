@@ -4,30 +4,30 @@
 
 A Payment Link is the base behind Blackstone Payment Integration, its fields are:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| Id | guid | The identifier of the payment link |
-| MerchantId | int | Id of the Merchant that created the Payment Link |
-| Amount | decimal | The amount charged |
-| Description | string | A description for additional information |
-| Type | int | Type of the Payment Link |
-| CreatedOn | DateTime | Date of Creation |
-| PaidOn | DateTime | Date in which it was paid |
-| DisabledOn | DateTime | Date in which it was disabled |
-| Status | int | Status of the Payment Link |
-| Active | bool | Specify whether Payment Link is active or not |
-| ServiceReferenceNumber | string | Service reference number |
-| InvoiceNumber | string | Invoice number |
-| Link | string | Url to proceed with the payment of the Payment Link |
+| Field                   | Type     | Description                                          |
+|-------------------------|----------|------------------------------------------------------|
+| Id                      | guid     | The identifier of the payment link                   |
+| MerchantId              | int      | Id of the Merchant that created the Payment Link     |
+| Amount                  | decimal  | The amount charged                                   |
+| Description             | string   | A description for additional information             |
+| Type                    | int      | Type of the Payment Link                             |
+| CreatedOn               | DateTime | Date of Creation                                     |
+| PaidOn                  | DateTime | Date in which it was paid                            |
+| DisabledOn              | DateTime | Date in which it was disabled                        |
+| Status                  | int      | Status of the Payment Link                           |
+| Active                  | bool     | Specify whether Payment Link is active or not        |
+| ServiceReferenceNumber  | string   | Service reference number                             |
+| InvoiceNumber           | string   | Invoice number                                       |
+| Link                    | string   | Url to proceed with the payment of the Payment Link  |
 
 ## Payment Link Type
 
 Payment Links can be created for a fixed or an open amount to be defined later by the client. This idea is represented with an enum of Payment Link possible types. Said types are:
 
-| Value | Type |
-|-------|------|
-| 0 | Open |
-| 1 | Fixed |
+| Value | Type   |
+|-------|--------|
+| 0     | Open   |
+| 1     | Fixed  |
 
 ## Payment Link Status
 
@@ -35,8 +35,8 @@ Payment Links can be either Paid or Unpaid, this is what we call the Payment Lin
 
 | Value | Status |
 |-------|--------|
-| 0 | Unpaid |
-| 1 | Paid |
+| 0     | Unpaid |
+| 1     | Paid   |
 
 ## API Endpoints
 
@@ -46,14 +46,14 @@ Payment Links can be either Paid or Unpaid, this is what we call the Payment Lin
 
 Your requests to Blackstone api share some basic fields in their body, those fields refer to your company specific credentials through which the system will manage, among other things, authentication. Said fields are:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| mid | int | Id assigned to you by Blackstone as a Merchant |
-| UserName | string | User name |
-| Password | string | Password |
-| AppType | int | App Type |
-| AppKey | int | App Key |
-| cid | int | Cashier Id |
+| Field    | Type   | Description                                          |
+|----------|--------|------------------------------------------------------|
+| mid      | int    | Id assigned to you by Blackstone as a Merchant       |
+| UserName | string | User name                                            |
+| Password | string | Password                                             |
+| AppType  | int    | App Type                                             |
+| AppKey   | int    | App Key                                              |
+| cid      | int    | Cashier Id                                           |
 
 They must be placed as part of the body of your request, just like:
 
@@ -72,11 +72,11 @@ They must be placed as part of the body of your request, just like:
 
 In the same way, responses share three basic fields:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| ResponseCode | int | The response code that the server is returning |
-| Msg | string | A short message explaining the response |
-| verbiage | string | Extended explanation of the response |
+| Field        | Type   | Description                                          |
+|--------------|--------|------------------------------------------------------|
+| ResponseCode | int    | The response code that the server is returning       |
+| Msg          | string | A short message explaining the response              |
+| verbiage     | string | Extended explanation of the response                 |
 
 A successful response will look like this:
 
@@ -94,14 +94,14 @@ A successful response will look like this:
 
 Requests can fail and the server will return a specific response code to provide insights of what failed:
 
-| Code | Meaning |
-|------|---------|
-| 1 | Invalid Credentials |
-| 11 | Unauthorized operation for Merchant |
-| 28 | Application has no permissions to execute that task |
-| 300 | System Error |
-| 404 | Resource Not Found |
-| 506 | Invalid parameter |
+| Code | Meaning                                             |
+|------|-----------------------------------------------------|
+| 1    | Invalid Credentials                                 |
+| 11   | Unauthorized operation for Merchant                 |
+| 28   | Application has no permissions to execute that task |
+| 300  | System Error                                        |
+| 404  | Resource Not Found                                  |
+| 506  | Invalid parameter                                   |
 
 ### GetPaymentLink
 
@@ -111,17 +111,17 @@ Requests can fail and the server will return a specific response code to provide
 
 **Request Params:** The id of the Payment Link to look for, you could also use the Invoice Number of the payment as value for this param.
 
-| Field | Description |
-|-------|-------------|
-| id | Id or Invoice Number of the Payment Link to look for |
+| Field | Description                                          |
+|-------|------------------------------------------------------|
+| id    | Id or Invoice Number of the Payment Link to look for |
 
 **Request Body:** No additional data, only the shared request body
 
 **Response:**
 Added to the shared response data will be included a Payment Link object.
 
-| Field | Description |
-|-------|-------------|
+| Field       | Description                       |
+|-------------|-----------------------------------|
 | PaymentLink | The requested Payment Link object |
 
 **Error Codes:**
@@ -190,15 +190,15 @@ If none of the Payment Links have the specified Id or Invoice Number then the re
 
 **Request Body:** Added to the shared request body is needed a short version of the Payment Link object that includes only Amount, Description and InvoiceNumber. If Amount field is set to null an open type Payment Link will be created, otherwise it will be a fixed type.
 
-| Field | Description |
-|-------|-------------|
+| Field       | Description                    |
+|-------------|--------------------------------|
 | PaymentLink | The Payment Link short version |
 
 **Response:**
 Added to the shared response data will be included the recently created Payment Link object.
 
-| Field | Description |
-|-------|-------------|
+| Field       | Description                       |
+|-------------|-----------------------------------|
 | PaymentLink | The requested Payment Link object |
 
 **Error Codes:**

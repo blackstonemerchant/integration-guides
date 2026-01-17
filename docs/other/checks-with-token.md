@@ -3,6 +3,7 @@ title: Check Payments with Token
 ---
 
 ## Overview
+
 This guide explains how to process check payments using a reusable token. The flow is:
 
 1) Process a regular check and request to save a token.
@@ -11,10 +12,12 @@ This guide explains how to process check payments using a reusable token. The fl
 > Tokens are merchant-scoped and should be stored securely on your side for reuse.
 
 ## Step 1: Process a check and request token creation
+
 - Endpoint: POST /CheckProcessor/ProcessCheck
 - Purpose: Authorize a check using account details and request token creation by setting `SaveToken = true`.
 
 ### Request body
+
 ```json
 {
   "AppKey": "your-app-key",
@@ -39,6 +42,7 @@ This guide explains how to process check payments using a reusable token. The fl
 ```
 
 ### Successful response example
+
 ```json
 {
   "ResponseCode": 200,
@@ -56,10 +60,12 @@ This guide explains how to process check payments using a reusable token. The fl
   - `CHECK_AMOUNT` must be a string with a valid decimal (e.g., "10.00").
 
 ## Step 2: Process a check using a token
+
 - Endpoint: POST /CheckProcessor/ProcessToken
 - Purpose: Charge a check payment using a previously saved token. Only `Token` and `CHECK_AMOUNT` are required; `CHECK_NUMBER` is optional.
 
 ### Request body
+
 ```json
 {
   "AppKey": "your-app-key",
@@ -73,15 +79,18 @@ This guide explains how to process check payments using a reusable token. The fl
 ```
 
 ### Successful response
+
 The response structure matches the regular check response (e.g., `ResponseCode = 200` on success).
 
 ## Error handling
+
 - `ResponseCode = 1`: Invalid credentials
 - `ResponseCode = 11`: Merchant not authorized for this operation
 - `ResponseCode = 14`: Invalid/expired/inactive token
 - `ResponseCode = 19`: Incorrect data type for `CHECK_AMOUNT`
 
 ## Best practices
+
 - Store tokens securely and associate them with your customer profiles.
 - Log the `ServiceTransactionNumber` from `TransactionInfo` for reconciliation.
 - Do not log or store routing/account numbers if you plan to reuse a token.
