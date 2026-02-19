@@ -110,40 +110,45 @@ When 3DS succeeds (`Y` or `A`), payment payload must include:
 Using `ApiKey` and `Token` from Step 1, run this sequence.
 
 **Reference mobile runtime configuration**
+
 * `challengeIndicator` is typically `"01"` unless acquirer policy requires another value.
 * Endpoints must be environment-based:
-* Sandbox: `https://api-sandbox.3dsintegrator.com/v2.2/authenticate/browser`
-* Production: `https://api.3dsintegrator.com/v2.2/authenticate/browser`
+  * Sandbox: `https://api-sandbox.3dsintegrator.com/v2.2/authenticate/browser`
+  * Production: `https://api.3dsintegrator.com/v2.2/authenticate/browser`
 * Required headers:
-* `X-3DS-API-KEY: <ApiKey>`
-* `Authorization: Bearer <Token>`
-* `Accept: application/json`
-* `Content-Type: application/json`
+  * `X-3DS-API-KEY: <ApiKey>`
+  * `Authorization: Bearer <Token>`
+  * `Accept: application/json`
+  * `Content-Type: application/json`
 * `threeDSRequestorURL` must use your configured callback domain (for example `https://your-domain/callback`).
 * Recommended runtime states:
-* `loadingToken` -> `authenticating` -> `fingerprint` -> `challenge` -> `polling` -> `finished`
+  * `loadingToken` -> `authenticating` -> `fingerprint` -> `challenge` -> `polling` -> `finished`
 
 1. **Build authentication request (`authenticate/browser`)**
 
    Purpose: send card + runtime data to obtain initial 3DS branch.
 
    Inputs:
-* `ApiKey`, `Token`
-* Mapped card fields: `amount`, `pan`, `month`, `year`
-* Browser/runtime fields and `threeDSRequestorURL`
+
+   * `ApiKey`, `Token`
+   * Mapped card fields: `amount`, `pan`, `month`, `year`
+   * Browser/runtime fields and `threeDSRequestorURL`
 
    Action:
-* Call `POST /v2.2/authenticate/browser` with required headers and JSON body.
+
+   * Call `POST /v2.2/authenticate/browser` with required headers and JSON body.
 
    Success output:
-* Initial 3DS response with one of these paths:
-* fingerprint data (`methodURL`, `threeDSMethodData`)
-* challenge data (`status = C`, `acsURL`, `creq`)
-* transaction ID only (polling path)
-* final status already available
+
+   * Initial 3DS response with one of these paths:
+   * fingerprint data (`methodURL`, `threeDSMethodData`)
+   * challenge data (`status = C`, `acsURL`, `creq`)
+   * transaction ID only (polling path)
+   * final status already available
 
    Failure handling:
-* Any request/network/token error must stop payment flow and return controlled error.
+
+   * Any request/network/token error must stop payment flow and return controlled error.
 
    Sample request body (simplified):
 
@@ -174,49 +179,56 @@ Using `ApiKey` and `Token` from Step 1, run this sequence.
    Purpose: choose correct next step from provider response.
 
    Decision rules:
-* If `methodURL` + `threeDSMethodData` exist: run fingerprint.
-* If `status = C` and `acsURL` + `creq` exist: run challenge.
-* If only transaction ID exists: start polling.
-* If terminal `status` is already present: classify directly.
+
+   * If `methodURL` + `threeDSMethodData` exist: run fingerprint.
+   * If `status = C` and `acsURL` + `creq` exist: run challenge.
+   * If only transaction ID exists: start polling.
+   * If terminal `status` is already present: classify directly.
 
    Failure handling:
-* If response is incomplete for all branches, fail safely and stop payment.
+
+   * If response is incomplete for all branches, fail safely and stop payment.
 
    **What "Open web context" means**
-* Open a dedicated in-app web container for one payment attempt.
-* Keep it isolated per attempt (no cross-attempt session sharing).
-* Enable JavaScript.
-* Enable redirects.
-* Enable URL-change listener to capture provider callback URLs.
-* Add timeout and explicit user-cancel handling.
-* Close only on terminal callback, cancel, timeout, or unrecoverable error.
+
+   * Open a dedicated in-app web container for one payment attempt.
+   * Keep it isolated per attempt (no cross-attempt session sharing).
+   * Enable JavaScript.
+   * Enable redirects.
+   * Enable URL-change listener to capture provider callback URLs.
+   * Add timeout and explicit user-cancel handling.
+   * Close only on terminal callback, cancel, timeout, or unrecoverable error.
 
 3. **Execute fingerprint flow (if required)**
 
    Purpose: complete 3DS method step and capture `transactionId`.
 
    Inputs:
-* `methodURL`
-* `threeDSMethodData`
+
+   * `methodURL`
+   * `threeDSMethodData`
 
    Action:
-* Open web context.
-* Load auto-submit HTML form posting `threeDSMethodData` to `methodURL`.
-* Watch URLs and only process provider callback pattern:
-* `https://response-<env>.3dsintegrator.com/<region>/v2.2/fingerprint/{transactionId}`
+
+   * Open web context.
+   * Load auto-submit HTML form posting `threeDSMethodData` to `methodURL`.
+   * Watch URLs and only process provider callback pattern:
+     * `https://response-<env>.3dsintegrator.com/<region>/v2.2/fingerprint/{transactionId}`
 
    Deterministic transaction extraction:
-* Parse URL.
-* Split path segments.
-* Verify penultimate segment is `fingerprint`.
-* Read last segment as `transactionId`.
-* Validate non-empty UUID-like value.
-* Store as active transaction ID.
-* Start polling only once per new transaction ID (idempotency guard).
+
+   * Parse URL.
+   * Split path segments.
+   * Verify penultimate segment is `fingerprint`.
+   * Read last segment as `transactionId`.
+   * Validate non-empty UUID-like value.
+   * Store as active transaction ID.
+   * Start polling only once per new transaction ID (idempotency guard).
 
    Failure handling:
-* Ignore non-provider URLs, malformed callbacks, and duplicates.
-* If no valid callback arrives before timeout, fail safely.
+
+   * Ignore non-provider URLs, malformed callbacks, and duplicates.
+   * If no valid callback arrives before timeout, fail safely.
 
    Fingerprint auto-submit payload concept:
 
@@ -265,25 +277,29 @@ Using `ApiKey` and `Token` from Step 1, run this sequence.
    Purpose: complete issuer challenge and capture/confirm final transaction context.
 
    Inputs:
-* `acsURL`
-* `creq`
+
+   * `acsURL`
+   * `creq`
 
    Action:
-* Open web context (isolated, JS enabled, redirects enabled).
-* Load auto-submit HTML posting `creq` to `acsURL`.
-* Track callback URLs matching:
-* `https://response-<env>.3dsintegrator.com/<region>/v2.2/challenge/{transactionId}`
+
+   * Open web context (isolated, JS enabled, redirects enabled).
+   * Load auto-submit HTML posting `creq` to `acsURL`.
+   * Track callback URLs matching:
+     * `https://response-<env>.3dsintegrator.com/<region>/v2.2/challenge/{transactionId}`
 
    Deterministic callback handling:
-* Parse URL and split path segments.
-* Verify penultimate segment is `challenge`.
-* Read last segment as callback `transactionId`.
-* Validate non-empty UUID-like value.
-* If callback ID differs from active ID, replace active ID and log transition.
-* Start/continue polling with active ID.
+
+   * Parse URL and split path segments.
+   * Verify penultimate segment is `challenge`.
+   * Read last segment as callback `transactionId`.
+   * Validate non-empty UUID-like value.
+   * If callback ID differs from active ID, replace active ID and log transition.
+   * Start/continue polling with active ID.
 
    Failure handling:
-* If user cancels, web context times out, or context errors, end as non-success and do not attempt payment.
+
+   * If user cancels, web context times out, or context errors, end as non-success and do not attempt payment.
 
    Challenge auto-submit payload concept:
 
@@ -336,31 +352,37 @@ Using `ApiKey` and `Token` from Step 1, run this sequence.
    Purpose: resolve pending flow and retrieve terminal result.
 
    Endpoint:
-* `GET /v2.2/transaction/{transactionId}/updates`
+
+   * `GET /v2.2/transaction/{transactionId}/updates`
 
    Start conditions:
-* After valid fingerprint callback.
-* After challenge callback (or challenge start if provider requires active polling).
-* After authenticate response when transaction ID already exists.
+
+   * After valid fingerprint callback.
+   * After challenge callback (or challenge start if provider requires active polling).
+   * After authenticate response when transaction ID already exists.
 
    Baseline polling policy:
-* Interval: 3 seconds.
-* Max attempts: 10.
-* First fetch immediately before first wait.
+
+   * Interval: 3 seconds.
+   * Max attempts: 10.
+   * First fetch immediately before first wait.
 
    Response handling:
-* `200`: process body (terminal result or challenge requirement).
-* `202` / `404` pending semantics: continue polling.
-* Other status/error: controlled failure, no charge.
+
+   * `200`: process body (terminal result or challenge requirement).
+   * `202` / `404` pending semantics: continue polling.
+   * Other status/error: controlled failure, no charge.
 
    Challenge trigger during polling:
-* If body includes `status = "C"` and `acsURL` + `creq`, pause current polling loop and run challenge flow.
+
+   * If body includes `status = "C"` and `acsURL` + `creq`, pause current polling loop and run challenge flow.
 
    Stop conditions:
-* Terminal status: `Y`, `A`, `N`, `U`, `R`.
-* Polling timeout.
-* User cancellation.
-* Unrecoverable network/provider error.
+
+   * Terminal status: `Y`, `A`, `N`, `U`, `R`.
+   * Polling timeout.
+   * User cancellation.
+   * Unrecoverable network/provider error.
 
    **PSEUDOCODE ONLY — Polling lifecycle**
    ```text
@@ -408,23 +430,26 @@ Using `ApiKey` and `Token` from Step 1, run this sequence.
    | `C` | Treat as non-terminal; continue orchestration (challenge/polling), never pay on unresolved `C`. |
 
    Required captured outputs:
-* `status`
-* `transStatusReason`
-* `authenticationValue`
-* `threeDsTransactionId`
+
+   * `status`
+   * `transStatusReason`
+   * `authenticationValue`
+   * `threeDsTransactionId`
 
    Note:
-* If provider returns `transStatusReasonDetail`, map it to contract field `transStatusReason`.
+
+   * If provider returns `transStatusReasonDetail`, map it to contract field `transStatusReason`.
 
 7. **Handle failures and resiliency**
 
    Purpose: prevent invalid charges and duplicate submissions.
 
    Rules:
-* Token/authenticate/fingerprint/challenge/polling exceptions must end as controlled failure and stop payment.
-* User cancellation is non-success and stops payment.
-* Protect payment submission with idempotency keys.
-* Keep callback and polling processing idempotent by transaction ID.
+
+   * Token/authenticate/fingerprint/challenge/polling exceptions must end as controlled failure and stop payment.
+   * User cancellation is non-success and stops payment.
+   * Protect payment submission with idempotency keys.
+   * Keep callback and polling processing idempotent by transaction ID.
 
    Error matrix:
 
@@ -462,6 +487,7 @@ Instead of HTML form attributes, mobile integrations map payment values into the
 6. Persist normalized fields and transaction IDs for traceability.
 
 If mapping validation fails:
+
 * Do not send `authenticate/browser`.
 * Return user-safe validation error.
 
@@ -557,6 +583,7 @@ function buildAuthenticatePayloadValidated(rawInput, runtimeContext):
 ```
 
 **Security notes for mobile mapping:**
+
 * Do not persist PAN/CVV in local storage.
 * Do not log `pan`, CVV, bearer token, or `authenticationValue`.
 * Fetch `ApiKey`/`Token` from backend only.
@@ -574,6 +601,7 @@ After successful 3DS completion (`status = Y` or `A`), capture:
 Both values must be included in Blackstone payment requests.
 
 Operational rules:
+
 * Payment submission proceeds only after terminal success (`Y` or `A`).
 * Any non-success result (including user cancel) must stop payment submission.
 * Persist `status` and `transStatusReason` for traceability.
@@ -598,17 +626,21 @@ Sending `SecureTransactionId` enables 3DS log retrieval in Blackstone Portal for
 **Required public contracts (APIs/interfaces/types):**
 
 1. Payment API contract must accept and process:
-* `SecureData`
-* `SecureTransactionId`
+
+   * `SecureData`
+   * `SecureTransactionId`
 2. Client payment model must carry:
-* `SecureData`
-* `SecureTransactionId`
-* `status`
-* `transStatusReason`
+
+   * `SecureData`
+   * `SecureTransactionId`
+   * `status`
+   * `transStatusReason`
 3. Logging/trace contract must include:
-* `SecureTransactionId` as primary 3DS correlation key
+
+   * `SecureTransactionId` as primary 3DS correlation key
 4. Optional backend verification contract must support:
-* `GET /v2.2/transaction/{transactionId}/updates`
+
+   * `GET /v2.2/transaction/{transactionId}/updates`
 
 ### Optional: Verify 3DS Results From Your Backend
 
