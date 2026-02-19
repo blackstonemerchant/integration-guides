@@ -81,17 +81,22 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Sandbox: sandbox.md
-  - Payment Links: payment-links.md
-  - Google Pay: google-pay-integration.md
-  - Apple Pay: apple-pay-integration.md
-  - ATH Mobile: ath-mobile-payment-button.md
-  - 3D Secure:
-      - Web: three-domain-secure.md
-      - Mobile: three-domain-secure-mobile.md
-  - WooCommerce Plugin: woocommerce-plugin.md
-  - Other:
-      - Check payments with token: other/checks-with-token.md
+  - Start Here:
+      - Sandbox: sandbox.md
+  - Core APIs:
+      - Payment Links: payment-links.md
+      - ATH Mobile: ath-mobile-payment-button.md
+  - Digital Wallets:
+      - Apple Pay: apple-pay-integration.md
+      - Google Pay: google-pay-integration.md
+  - Security & Authentication:
+      - 3D Secure:
+          - Web: three-domain-secure.md
+          - Mobile: three-domain-secure-mobile.md
+  - Plugins & Commerce:
+      - WooCommerce Plugin: woocommerce-plugin.md
+  - Tools & Operations:
+      - Check Payments with Token: other/checks-with-token.md
 
 extra:
   social:
