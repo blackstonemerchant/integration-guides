@@ -86,7 +86,9 @@ nav:
   - Google Pay: google-pay-integration.md
   - Apple Pay: apple-pay-integration.md
   - ATH Mobile: ath-mobile-payment-button.md
-  - 3D Secure: three-domain-secure.md
+  - 3D Secure:
+      - Web: three-domain-secure.md
+      - Mobile: three-domain-secure-mobile.md
   - WooCommerce Plugin: woocommerce-plugin.md
   - Other:
       - Check payments with token: other/checks-with-token.md
