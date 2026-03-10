@@ -87,7 +87,10 @@ nav:
       - Payment Links: payment-links.md
       - ATH Mobile: ath-mobile-payment-button.md
   - Digital Wallets:
-      - Apple Pay: apple-pay-integration.md
+      - Apple Pay:
+          - Web: apple-pay-web.md
+          - iOS: apple-pay-ios.md
+          - Flutter: apple-pay-flutter.md
       - Google Pay: google-pay-integration.md
   - Security & Authentication:
       - 3D Secure:

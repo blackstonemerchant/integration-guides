@@ -352,4 +352,4 @@ Integrating Google Pay with Bpayd API involves:
 
 The key requirement is to **Base64-encode the Google Pay token** before sending it to the Bpayd API. All other parameters follow standard Bpayd API conventions.
 
-If you also need to support Apple Pay, see the [Apple Pay Integration Guide](apple-pay-integration.md).
+If you also need to support Apple Pay, see the Apple Pay Integration Guide for [Web](apple-pay-web.md), [iOS](apple-pay-ios.md), or [Flutter](apple-pay-flutter.md).
