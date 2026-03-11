@@ -244,4 +244,4 @@ Integrating Apple Pay with Flutter and Bpayd API involves:
 3. **Back-end**: Call `SaleWithApplePay` with your `MerchantIdentifier`, Base64-encoding the Apple Pay token before sending it to Bpayd.
 4. **Handle response**: Process the result and update your application accordingly.
 
-If you also need to support Google Pay, see the [Google Pay Integration Guide](google-pay-integration.md).
+If you also need to support Google Pay, see the Google Pay Integration Guide for [Web](google-pay-web.md), [Android](google-pay-android.md), or [Flutter](google-pay-flutter.md).

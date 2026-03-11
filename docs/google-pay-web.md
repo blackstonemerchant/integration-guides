@@ -1,12 +1,12 @@
-# Google Pay™ Integration Guide
+# Google Pay™ Web Integration
 
 ## Overview
 
-This guide describes how to integrate Google Pay as a payment method in your website or application using the Bpayd API. Google Pay provides a fast, secure way for customers to pay using the payment methods stored in their Google Account.
+This guide describes how to integrate Google Pay as a payment method on your **website** using the Google Pay JavaScript API and the Bpayd API. Google Pay provides a fast, secure way for customers to pay using the payment methods stored in their Google Account.
 
 The integration involves two main components:
 
-1. **Front-end**: Implementing the Google Pay button and obtaining the payment token
+1. **Front-end (Web)**: Implementing the Google Pay button and obtaining the payment token using Google Pay JS
 2. **Back-end**: Sending the Google Pay token to the Bpayd API for payment processing
 
 ## Prerequisites
@@ -14,7 +14,7 @@ The integration involves two main components:
 Before you begin, make sure you have:
 
 - **Bpayd API Credentials**: Provided by Bpayd/Blackstone for your integration:
-  
+
       - `AppKey`: Application Key that uniquely identifies your application
       - `AppType`: Application Type identifier
       - `UserName`: API username
@@ -36,8 +36,8 @@ Before you begin, make sure you have:
 - **Supported Browser**: Google Pay works in Chrome, Safari, Firefox, and Edge
 
 - **Essential Prerequisites & Policy Compliance**
-  
-  > ### ⚠️ **REQUIRED: Before Starting Integration**
+
+  > ### Warning: **REQUIRED: Before Starting Integration**
   >
   > All merchants using Bpayd's Google Pay integration **MUST**:
   >
@@ -49,9 +49,15 @@ Before you begin, make sure you have:
   >
   > **These requirements are mandatory and non-negotiable for all implementations.**
 
+- **Official web documentation**:
+  - Google Pay API for Web - Overview: <https://developers.google.com/pay/api/web/overview>
+  - Web Integration Checklist: <https://developers.google.com/pay/api/web/guides/test-and-deploy/integration-checklist>
+  - Web Brand Guidelines: <https://developers.google.com/pay/api/web/guides/brand-guidelines>
+  - Web Integration Setup Guide: <https://developers.google.com/pay/api/web/guides/setup>
+
 ## Integration Flow
 
-The complete Google Pay payment flow consists of these steps:
+The complete Google Pay web payment flow consists of these steps:
 
 1. The customer clicks the Google Pay button on your website.
 2. Google Pay displays the available payment methods and the customer authorizes the payment.
@@ -62,8 +68,6 @@ The complete Google Pay payment flow consists of these steps:
 7. Your application displays the payment result to the customer.
 
 ## Responsibilities
-
-At a high level, responsibilities are split as follows:
 
 - **Bpayd provides:**
 
@@ -86,7 +90,7 @@ At a high level, responsibilities are split as follows:
 > [!NOTE]
 > **Disclaimer**: The following frontend implementation is provided as a **reference guide**. Your actual implementation may vary depending on your technology stack (e.g., React, Vue, Angular) and specific application architecture. You should adapt these examples to fit your needs rather than copying them verbatim.
 
-On the front end, you integrate Google Pay using Google’s official Web API. The typical flow is:
+On the web, you integrate Google Pay using Google's official JavaScript API. The typical flow is:
 
 1. Load the Google Pay JavaScript library.
 2. Create a `PaymentsClient` in **TEST** or **PRODUCTION** environment.
@@ -95,136 +99,112 @@ On the front end, you integrate Google Pay using Google’s official Web API. Th
 5. Render the Google Pay button.
 6. When the user authorizes the payment, obtain the Google Pay payment token and send it to your back-end.
 
-Bpayd supports Google Pay integration on the following platforms. Choose your platform and follow the corresponding Google documentation:
-
-If you're integrating Google Pay into an Android application, review these official Google resources:
-
-- **[Google Pay API for Android - Overview](https://developers.google.com/pay/api/android/overview)**
-- **[Android Integration Checklist](https://developers.google.com/pay/api/android/guides/test-and-deploy/integration-checklist)**
-- **[Android Brand Guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines)**
-
-If you're integrating Google Pay on a website, review these official Google resources:
-
-- **[Google Pay API for Web - Overview](https://developers.google.com/pay/api/web/overview)**
-- **[Web Integration Checklist](https://developers.google.com/pay/api/web/guides/test-and-deploy/integration-checklist)**
-- **[Web Brand Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines)**
-- **[Web Integration Setup Guide](https://developers.google.com/pay/api/web/guides/setup)**
-
 The first mention of the service must include the registered trademark: **Google Pay™**.
 
-Merchants **must** follow official Google brand guidelines:
-
-- [Google Pay Android Brand Guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines)
-- [Google Pay Web Brand Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines)
-
-**Requirements:**
+Merchants **must** follow official [Google Pay Web Brand Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines):
 
 - Use only official logos and buttons
 - Do not alter colors, proportions, or design
 - Follow spacing and sizing guidelines
 
-**✅ Correct example:**
-
-> "Provide your customers with fast and secure payments with **Google Pay™**, using official buttons without changes to colors or proportions."
-
 ### Google Pay configuration for Bpayd
 
 When integrating Google Pay with Bpayd, there are **two Google Pay client methods** you must implement, and each one expects a specific request payload. The JavaScript examples below show exactly which fields must be sent in each call.
 
-**1. Availability check – `isReadyToPay`**
+**1. Availability check -- `isReadyToPay`**
 
-    ```javascript
-    const paymentsClient = new google.payments.api.PaymentsClient({
-      environment: 'TEST', // or 'PRODUCTION' when going live
-    });
+```javascript
+const paymentsClient = new google.payments.api.PaymentsClient({
+  environment: 'TEST', // or 'PRODUCTION' when going live
+});
 
-    // isReadyToPay: checks if Google Pay is available with Bpayd’s configuration
-    const isReadyToPayRequest = {
-      apiVersion: 2,
-      apiVersionMinor: 0,
-      allowedPaymentMethods: [{
-        type: 'CARD',
-        parameters: {
-          // Authentication methods required by Bpayd
-          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-          // Card networks supported by Bpayd
-          allowedCardNetworks: ['VISA', 'MASTERCARD'],
-        },
-        tokenizationSpecification: {
-          type: 'PAYMENT_GATEWAY',
-          parameters: {
-            gateway: 'fiserv',
-            gatewayMerchantId: '<Payment Processor Merchant ID provided by Bpayd>',
-          },
-        },
-      }],
-    };
+// isReadyToPay: checks if Google Pay is available with Bpayd's configuration
+const isReadyToPayRequest = {
+  apiVersion: 2,
+  apiVersionMinor: 0,
+  allowedPaymentMethods: [{
+    type: 'CARD',
+    parameters: {
+      // Authentication methods required by Bpayd
+      allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+      // Card networks supported by Bpayd
+      allowedCardNetworks: ['VISA', 'MASTERCARD'],
+    },
+    tokenizationSpecification: {
+      type: 'PAYMENT_GATEWAY',
+      parameters: {
+        gateway: 'blackstone',
+        gatewayMerchantId: '<Payment Processor Merchant ID provided by Bpayd>',
+      },
+    },
+  }],
+};
 
-    paymentsClient.isReadyToPay(isReadyToPayRequest)
-      .then(response => {
-        if (response.result) {
-          // Create and render the Google Pay button.
-          // The onClick handler will later call paymentsClient.loadPaymentData.
-          const button = paymentsClient.createButton({
-            onClick: processGooglePay,
-          });
-          document.getElementById('googlePayButton').appendChild(button);
-        } else {
-          // Google Pay is not available on this device/browser
-        }
-      })
-      .catch(err => {
-        console.error('Error checking Google Pay availability:', err);
+paymentsClient.isReadyToPay(isReadyToPayRequest)
+  .then(response => {
+    if (response.result) {
+      // Create and render the Google Pay button.
+      // The onClick handler will later call paymentsClient.loadPaymentData.
+      const button = paymentsClient.createButton({
+        onClick: processGooglePay,
       });
-    ```
-
-**2. Payment request – `loadPaymentData`**
-
-    ```javascript
-    // loadPaymentData: requests a Google Pay payment and returns the token
-    function processGooglePay() {
-      // totalAmount should be your computed order total (amount + taxes/fees, etc.)
-      const totalAmount = /* your computed total amount */ 0;
-
-      const paymentDataRequest = {
-        apiVersion: 2,
-        apiVersionMinor: 0,
-        allowedPaymentMethods: [{
-          type: 'CARD',
-          parameters: {
-            // Same auth methods and networks as in isReadyToPay
-            allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-            allowedCardNetworks: ['VISA', 'MASTERCARD'],
-          },
-          tokenizationSpecification: {
-            type: 'PAYMENT_GATEWAY',
-            parameters: {
-              gateway: 'fiserv',
-              gatewayMerchantId: '<Payment Processor Merchant ID provided by Bpayd>',
-            },
-          },
-        }],
-        transactionInfo: {
-          totalPriceStatus: 'FINAL',
-          totalPrice: String(totalAmount),
-          currencyCode: '<Your currency code>',  // e.g. "USD"
-        },
-        merchantInfo: {
-          merchantId: '8138048649892127088',           // Bpayd Google Pay merchant
-          merchantName: '<Your Business Name Shown To Customers>',
-        },
-      };
-
-      paymentsClient.loadPaymentData(paymentDataRequest)
-        .then(paymentData => {
-          const googlePayToken = paymentData.paymentMethodData.tokenizationData.token;
-          // Forward googlePayToken to your back-end exactly as received
-        })
-        .catch(err => {
-          console.error('Payment failed or was canceled:', err);
-        });
+      document.getElementById('googlePayButton').appendChild(button);
+    } else {
+      // Google Pay is not available on this device/browser
     }
-    ```
+  })
+  .catch(err => {
+    console.error('Error checking Google Pay availability:', err);
+  });
+```
+
+**2. Payment request -- `loadPaymentData`**
+
+```javascript
+// loadPaymentData: requests a Google Pay payment and returns the token
+function processGooglePay() {
+  // totalAmount should be your computed order total (amount + taxes/fees, etc.)
+  const totalAmount = /* your computed total amount */ 0;
+
+  const paymentDataRequest = {
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [{
+      type: 'CARD',
+      parameters: {
+        // Same auth methods and networks as in isReadyToPay
+        allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+        allowedCardNetworks: ['VISA', 'MASTERCARD'],
+      },
+      tokenizationSpecification: {
+        type: 'PAYMENT_GATEWAY',
+        parameters: {
+          gateway: 'blackstone',
+          gatewayMerchantId: '<Payment Processor Merchant ID provided by Bpayd>',
+        },
+      },
+    }],
+    transactionInfo: {
+      totalPriceStatus: 'FINAL',
+      totalPrice: String(totalAmount),
+      currencyCode: '<Your currency code>',  // e.g. "USD"
+    },
+    merchantInfo: {
+      merchantId: '8138048649892127088',           // Bpayd Google Pay merchant
+      merchantName: '<Your Business Name Shown To Customers>',
+    },
+  };
+
+  paymentsClient.loadPaymentData(paymentDataRequest)
+    .then(paymentData => {
+      const googlePayToken = paymentData.paymentMethodData.tokenizationData.token;
+      // Forward googlePayToken to your back-end exactly as received
+    })
+    .catch(err => {
+      console.error('Payment failed or was canceled:', err);
+    });
+}
+```
 
 All other Google Pay fields (supported networks, button style, etc.) should be implemented according to Google's official guides. The Bpayd-specific requirements are the configuration shown in these two calls and that you forward the **unaltered Google Pay payment token** to your back-end.
 
@@ -256,9 +236,9 @@ Before you can integrate Google Pay on your website, you must provide Bpayd with
 
 **Important**: Google Pay will only work correctly on domains that have been registered and approved through Bpayd. Make sure to provide your complete list of domains before beginning your integration.
 
-## Required Documentation for Web Integration
+## Required Documentation
 
-When integrating Google Pay on your website, you must provide Blackstone/Bpayd with screenshots of your complete buyflow. These screenshots are required to verify proper implementation and compliance with Google Pay guidelines.
+When integrating Google Pay, you must provide Blackstone/Bpayd with screenshots of your complete buyflow. These screenshots are required to verify proper implementation and compliance with Google Pay guidelines.
 
 ### Required Screenshots
 
@@ -278,7 +258,7 @@ You must submit the following screenshots of your payment flow:
 
 4. **Google Pay API Payment Screen**
    - When a user is shown the payment info they've saved to Google Pay
-   - **Important**: Android won't allow you to take a screenshot of this screen, so you must take a picture of the screen using another device (camera or phone)
+   - Shows the Google Pay payment sheet
 
 5. **Post-Purchase Screen**
    - When a user has made a successful purchase
@@ -288,7 +268,6 @@ You must submit the following screenshots of your payment flow:
 
 - Ensure all screenshots clearly show the relevant screen and user interface elements
 - Screenshots should represent the actual production interface (or final staging version)
-- For the Google Pay API payment screen on Android, use a separate device to photograph the screen
 - **Review [Google Pay brand guidelines examples](https://developers.google.com/pay/api/web/guides/brand-guidelines#put-it-all-together) to ensure proper button implementation before submitting screenshots**
 - Submit all screenshots to Blackstone/Bpayd as part of your integration approval process
 
@@ -296,8 +275,8 @@ You must submit the following screenshots of your payment flow:
 
 ### API Endpoint
 
-**URL**: `https://services.bmspay.com/api/Transactions/SaleWithGooglePay`  
-**Method**: `POST`  
+**URL**: `https://services.bmspay.com/api/Transactions/SaleWithGooglePay`
+**Method**: `POST`
 **Content-Type**: `application/json`
 
 ### Request Parameters
@@ -317,38 +296,39 @@ The Google Pay token you receive on the front end is a JSON payload. **Before se
 
 ### Sample request body
 
-    ```json
-    {
-      "AppKey": "YOUR_APP_KEY",
-      "AppType": 1,
-      "UserName": "YOUR_USERNAME",
-      "Password": "YOUR_PASSWORD",
-      "mid": 12345,
-      "cid": 1,
+```json
+{
+  "AppKey": "YOUR_APP_KEY",
+  "AppType": 1,
+  "UserName": "YOUR_USERNAME",
+  "Password": "YOUR_PASSWORD",
+  "mid": 12345,
+  "cid": 1,
 
-      "Amount": 10.50,
-      "Token": "<BASE64_ENCODED_GOOGLE_PAY_TOKEN>",
-      "UserTransactionNumber": "UNIQUE_TXN_123456",
+  "Amount": 10.50,
+  "Token": "<BASE64_ENCODED_GOOGLE_PAY_TOKEN>",
+  "UserTransactionNumber": "UNIQUE_TXN_123456",
 
-      "IsTest": true
-    }
-    ```
+  "IsTest": true
+}
+```
 
 This example shows the minimum structure expected by the Bpayd API for a Google Pay sale. You can add any other supported fields as described in the official documentation.
 
 ## Testing
 
-Use a **Google Pay TEST environment** with `IsTest: true` when exercising your integration, and rely on Google’s official test cards and scenarios:
+Use a **Google Pay TEST environment** with `IsTest: true` when exercising your integration, and rely on Google's official test cards and scenarios:
 
 - Google Pay test cards and scenarios: <https://developers.google.com/pay/api/android/guides/resources/test-card-suite>
 
 ## Summary
 
-Integrating Google Pay with Bpayd API involves:
+Integrating Google Pay on the web with Bpayd API involves:
 
-1. **Front-end**: Implement Google Pay button, obtain payment token
-2. **Back-end**: Encode token to Base64, call `/api/Transactions/SaleWithGooglePay` endpoint
-3. **Handle response**: Process success/failure and update your application accordingly
+1. **Domain setup**: Provide Bpayd with all domains where Google Pay will be used and wait for registration approval.
+2. **Front-end**: Implement Google Pay button using Google Pay JS, obtain the payment token.
+3. **Back-end**: Encode token to Base64, call `/api/Transactions/SaleWithGooglePay` endpoint.
+4. **Handle response**: Process success/failure and update your application accordingly.
 
 The key requirement is to **Base64-encode the Google Pay token** before sending it to the Bpayd API. All other parameters follow standard Bpayd API conventions.
 

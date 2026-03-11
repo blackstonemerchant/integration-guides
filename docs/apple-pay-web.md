@@ -410,4 +410,4 @@ Integrating Apple Pay on the web with Bpayd API involves:
 
 The key requirements are to **correctly configure and verify your domains with Apple** and to **Base64-encode the Apple Pay token** before calling `SaleWithApplePay`. All other parameters follow standard Bpayd API conventions.
 
-If you also need to support Google Pay, see the [Google Pay Integration Guide](google-pay-integration.md).
+If you also need to support Google Pay, see the Google Pay Integration Guide for [Web](google-pay-web.md), [Android](google-pay-android.md), or [Flutter](google-pay-flutter.md).

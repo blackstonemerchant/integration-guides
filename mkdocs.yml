@@ -91,7 +91,10 @@ nav:
           - Web: apple-pay-web.md
           - iOS: apple-pay-ios.md
           - Flutter: apple-pay-flutter.md
-      - Google Pay: google-pay-integration.md
+      - Google Pay:
+          - Web: google-pay-web.md
+          - Android: google-pay-android.md
+          - Flutter: google-pay-flutter.md
   - Security & Authentication:
       - 3D Secure:
           - Web: three-domain-secure.md
