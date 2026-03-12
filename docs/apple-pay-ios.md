@@ -25,7 +25,7 @@ Before you begin, make sure you have:
 - **Apple Pay enablement from Bpayd**: Apple Pay is enabled for your merchant in Bpayd.
 - **Apple Developer Program account** with Apple Pay capability enabled in Xcode.
 - **Your own Apple Pay Merchant ID** registered in your Apple Developer account (see [Merchant ID Setup](#merchant-id-setup) below).
-- **Payment Processing Certificate** created using the Bpayd CSR (see [Merchant ID Setup](#merchant-id-setup) below).
+- **Payment Processing Certificate** created using a CSR generated from the Bpayd Merchants Portal (see [Merchant ID Setup](#merchant-id-setup) below).
 - **Test device** with Apple Pay set up (or Apple Pay sandbox test cards).
 - Official iOS documentation:
   - Setting up Apple Pay: <https://developer.apple.com/documentation/passkit/setting-up-apple-pay>
@@ -40,7 +40,7 @@ The complete Apple Pay in-app flow consists of these steps:
 3. The customer authorizes the payment with Face ID, Touch ID, or passcode.
 4. iOS returns a payment token (`payment.token.paymentData`).
 5. Your app sends the payment token to your back-end.
-6. Your back-end Base64-encodes the token and calls the Bpayd API `SaleWithApplePay` endpoint with your `MerchantIdentifier`.
+6. Your back-end Base64-encodes the token and calls the Bpayd API `SaleWithApplePay` endpoint.
 7. Bpayd processes the payment and returns the result.
 8. Your app displays the payment result to the customer.
 
@@ -49,35 +49,38 @@ The complete Apple Pay in-app flow consists of these steps:
 ### Bpayd provides
 
 - Bpayd API credentials (`AppKey`, `AppType`, `UserName`, `Password`, `mid`, `cid`).
-- CSR (Certificate Signing Request) for creating your Payment Processing Certificate.
+- Self-service CSR generation via the Merchants Portal (Developers > Apple Pay).
 - API endpoint for `SaleWithApplePay` (Apple Pay sale processing).
+- Automatic merchant key resolution based on the Apple Pay token (no need to pass `MerchantIdentifier` in the request).
 
 ### Your application is responsible for
 
-- Creating your own Apple Pay Merchant ID and Payment Processing Certificate using the Bpayd CSR (see [Merchant ID Setup](#merchant-id-setup)).
+- Creating your own Apple Pay Merchant ID and Payment Processing Certificate using the CSR from the Merchants Portal (see [Merchant ID Setup](#merchant-id-setup)).
 - Enabling Apple Pay capability and adding your merchant identifier in Xcode.
 - Building the Apple Pay in-app flow with PassKit (`PKPaymentRequest`, `PKPaymentAuthorizationController`).
 - Forwarding the Apple Pay token (`payment.token.paymentData`) to your back-end exactly as received from Apple.
 - Base64-encoding the token on the back-end before sending it to Bpayd.
-- Including `MerchantIdentifier` (your own merchant ID) in the `SaleWithApplePay` request.
 - Generating a unique `UserTransactionNumber` for each transaction.
 
 ## Merchant ID Setup
 
 For in-app Apple Pay, you must use your own Apple Pay Merchant ID registered in your Apple Developer account. This is required because Apple ties the merchant identifier to your app's code signing entitlements, which must belong to your own Apple Developer Team.
 
-### 1. Download the Bpayd CSR
+### 1. Generate a CSR from the Merchants Portal
 
-Download the Bpayd Certificate Signing Request (CSR) file. You will use this when creating your Payment Processing Certificate in Apple's developer portal.
-
-**Download**: [bpayd-apple-pay.csr](downloads/bpayd-apple-pay.csr)
+1. Log in to your **Bpayd Merchants Portal**.
+2. Go to **Business Settings** > **Developers** > **Apple Pay** tab.
+3. Click **Generate New Key Pair**.
+4. Enter your **Apple Merchant Identifier** (e.g., `merchant.com.yourcompany.yourapp`) and an optional label.
+5. Click **Generate**. The portal will create a unique key pair and CSR for your merchant.
+6. Click **Download CSR** to download the `.csr` file.
 
 ### 2. Create a Merchant ID in Apple Developer
 
 1. Sign in to your [Apple Developer account](https://developer.apple.com/account/).
 2. Go to **Certificates, Identifiers & Profiles** > **Identifiers**.
 3. Click the **+** button and select **Merchant IDs**.
-4. Enter a description (e.g., "My App Apple Pay") and an identifier (e.g., `merchant.com.yourcompany.yourapp`).
+4. Enter a description (e.g., "My App Apple Pay") and an identifier matching the one you used in step 1 (e.g., `merchant.com.yourcompany.yourapp`).
 5. Click **Continue** and then **Register**.
 
 ### 3. Create the Payment Processing Certificate
@@ -85,14 +88,19 @@ Download the Bpayd Certificate Signing Request (CSR) file. You will use this whe
 1. In **Certificates, Identifiers & Profiles** > **Identifiers**, select your newly created Merchant ID.
 2. Under **Apple Pay Payment Processing Certificate**, click **Create Certificate**.
 3. When prompted, answer **No** to the question "Will payments associated with this Merchant ID be processed exclusively in China mainland?".
-4. Upload the **Bpayd CSR file** you downloaded in step 1 (do **not** generate your own CSR).
-5. Click **Continue** and then **Download** the certificate.
+4. Upload the **CSR file** you downloaded from the Merchants Portal in step 1 (do **not** generate your own CSR).
+5. Click **Continue** and then **Download** the `.cer` certificate file.
 
-You do not need to install or use this certificate yourself. It is only needed so that Apple can encrypt payment tokens in a way that Bpayd can decrypt.
+### 4. Upload the Certificate to the Merchants Portal
 
-### 4. Configure your app
+1. Back in the **Bpayd Merchants Portal** > **Developers** > **Apple Pay** tab.
+2. Find the key pair you generated earlier (it will show status **Pending Certificate**).
+3. Click **Upload .cer** and select the `.cer` file you downloaded from Apple.
+4. The certificate status will change to **Active** and your integration is ready.
 
-Add the Apple Pay capability in Xcode and select your Merchant ID (the one you just created).
+### 5. Configure your app
+
+Add the Apple Pay capability in Xcode and select your Merchant ID (the one you created in step 2).
 
 In your entitlements (or via Xcode > Signing & Capabilities > Apple Pay):
 
@@ -187,7 +195,6 @@ At a minimum, your request must include:
 
 - **Authentication fields**: `AppKey`, `AppType`, `UserName`, `Password`, `mid`, `cid`
 - **Transaction fields**: `Amount`, `Token`, `UserTransactionNumber`
-- **In-app required**: `MerchantIdentifier` — your own Apple Pay merchant identifier (e.g., `merchant.com.yourcompany.yourapp`)
 
 `UserTransactionNumber` must be **unique per transaction** and is used by Bpayd for transaction tracking and idempotency.
 
@@ -218,8 +225,6 @@ The typical sequence is:
     "Token": "<BASE64_ENCODED_APPLE_PAY_TOKEN>",
     "UserTransactionNumber": "UNIQUE_TXN_123456",
 
-    "MerchantIdentifier": "merchant.com.yourcompany.yourapp",
-
     "IsTest": true
 }
 ```
@@ -236,9 +241,9 @@ Use the **Apple Pay sandbox** when testing your integration, and set `IsTest: tr
 
 Integrating Apple Pay on iOS with Bpayd API involves:
 
-1. **Merchant ID setup**: Create your own Apple Pay Merchant ID and Payment Processing Certificate using the Bpayd CSR.
+1. **Merchant ID setup**: Generate a CSR from the Merchants Portal, create your Apple Pay Merchant ID and Payment Processing Certificate in Apple Developer, and upload the `.cer` back to the portal.
 2. **Front-end**: Implement Apple Pay using PassKit and obtain the Apple Pay token payload.
-3. **Back-end**: Call `SaleWithApplePay` with your `MerchantIdentifier`, Base64-encoding the Apple Pay token before sending it to Bpayd.
+3. **Back-end**: Call `SaleWithApplePay`, Base64-encoding the Apple Pay token before sending it to Bpayd.
 4. **Handle response**: Process the result and update your application accordingly.
 
 If you also need to support Google Pay, see the Google Pay Integration Guide for [Web](google-pay-web.md), [Android](google-pay-android.md), or [Flutter](google-pay-flutter.md).
