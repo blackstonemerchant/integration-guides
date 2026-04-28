@@ -255,13 +255,23 @@ For the full list of supported fields and detailed schema for `SaleWithGooglePay
 
 ### Important: Token encoding
 
-The Google Pay token you receive from the `pay` package is the payment result payload. **Before sending it to the Bpayd API, you must Base64-encode it** and place the result in the `Token` field of the request.
+The preferred token value is the string at `paymentMethodData.tokenizationData.token` in the `pay` package payment result. **Before sending it to the Bpayd API, you must Base64-encode that token string** and place the result in the `Token` field of the request.
 
 The typical sequence is:
 
-1. On the front end, obtain the Google Pay token from `onPaymentResult` and extract the token string.
+1. On the front end, obtain the Google Pay result from `onPaymentResult` and extract `paymentMethodData.tokenizationData.token`.
 2. Send that token string to your back-end.
 3. On the back-end, Base64-encode the token string and assign the result to the `Token` field in the `SaleWithGooglePay` request body.
+
+For compatibility, the API also accepts Base64-encoded JSON wrappers around the same token:
+
+- `{ "paymentData": <google_pay_token> }`
+- `{ "paymentData": "<google_pay_token_as_json_string>" }`
+- `{ "token": <google_pay_token> }`
+- `{ "token": "<google_pay_token_as_json_string>" }`
+- the full Google Pay response object containing `paymentMethodData.tokenizationData.token`
+
+Even though these wrappers are accepted, new integrations should send the direct `paymentMethodData.tokenizationData.token` value.
 
 ### Sample request body
 
@@ -275,7 +285,7 @@ The typical sequence is:
     "cid": 1,
 
     "Amount": 10.50,
-    "Token": "<BASE64_ENCODED_GOOGLE_PAY_TOKEN>",
+    "Token": "<BASE64_ENCODED_PAYMENT_METHOD_DATA_TOKENIZATION_DATA_TOKEN>",
     "UserTransactionNumber": "UNIQUE_TXN_123456",
 
     "IsTest": true
@@ -302,6 +312,6 @@ Integrating Google Pay with Flutter and Bpayd API involves:
 3. **Back-end**: Encode token to Base64, call `/api/Transactions/SaleWithGooglePay` endpoint.
 4. **Handle response**: Process the result and update your application accordingly.
 
-The key requirement is to **Base64-encode the Google Pay token** before sending it to the Bpayd API. All other parameters follow standard Bpayd API conventions.
+The key requirement is to **Base64-encode `paymentMethodData.tokenizationData.token`** before sending it to the Bpayd API. All other parameters follow standard Bpayd API conventions.
 
 If you also need to support Apple Pay, see the Apple Pay Integration Guide for [Web](apple-pay-web.md), [iOS](apple-pay-ios.md), or [Flutter](apple-pay-flutter.md).

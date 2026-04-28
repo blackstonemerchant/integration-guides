@@ -292,7 +292,17 @@ For the full list of supported fields and detailed schema for `SaleWithGooglePay
 
 ### Important: Token Encoding
 
-The Google Pay token you receive on the front end is a JSON payload. **Before sending it to the Bpayd API, you must Base64-encode it** and place the result in the `Token` field of the request.
+The preferred token value is the string returned by `paymentData.paymentMethodData.tokenizationData.token`. **Before sending it to the Bpayd API, you must Base64-encode that token string** and place the result in the `Token` field of the request.
+
+For compatibility, the API also accepts Base64-encoded JSON wrappers around the same token:
+
+- `{ "paymentData": <google_pay_token> }`
+- `{ "paymentData": "<google_pay_token_as_json_string>" }`
+- `{ "token": <google_pay_token> }`
+- `{ "token": "<google_pay_token_as_json_string>" }`
+- the full Google Pay response object containing `paymentMethodData.tokenizationData.token`
+
+Even though these wrappers are accepted, new integrations should send the direct `paymentMethodData.tokenizationData.token` value.
 
 ### Sample request body
 
@@ -306,7 +316,7 @@ The Google Pay token you receive on the front end is a JSON payload. **Before se
   "cid": 1,
 
   "Amount": 10.50,
-  "Token": "<BASE64_ENCODED_GOOGLE_PAY_TOKEN>",
+  "Token": "<BASE64_ENCODED_PAYMENT_METHOD_DATA_TOKENIZATION_DATA_TOKEN>",
   "UserTransactionNumber": "UNIQUE_TXN_123456",
 
   "IsTest": true
@@ -330,6 +340,6 @@ Integrating Google Pay on the web with Bpayd API involves:
 3. **Back-end**: Encode token to Base64, call `/api/Transactions/SaleWithGooglePay` endpoint.
 4. **Handle response**: Process success/failure and update your application accordingly.
 
-The key requirement is to **Base64-encode the Google Pay token** before sending it to the Bpayd API. All other parameters follow standard Bpayd API conventions.
+The key requirement is to **Base64-encode `paymentData.paymentMethodData.tokenizationData.token`** before sending it to the Bpayd API. All other parameters follow standard Bpayd API conventions.
 
 If you also need to support Apple Pay, see the Apple Pay Integration Guide for [Web](apple-pay-web.md), [iOS](apple-pay-ios.md), or [Flutter](apple-pay-flutter.md).
