@@ -101,6 +101,7 @@ nav:
           - Mobile: three-domain-secure-mobile.md
   - Plugins & Commerce:
       - WooCommerce Plugin: woocommerce-plugin.md
+      - Zoho CRM: zoho.md
   - Tools & Operations:
       - Check Payments with Token: other/checks-with-token.md
 
