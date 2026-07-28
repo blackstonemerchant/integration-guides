@@ -101,7 +101,11 @@ nav:
           - Mobile: three-domain-secure-mobile.md
   - Plugins & Commerce:
       - WooCommerce Plugin: woocommerce-plugin.md
+<<<<<<< HEAD
       - Zoho CRM: zoho.md
+=======
+      - Xero: xero.md
+>>>>>>> origin/main
   - Tools & Operations:
       - Check Payments with Token: other/checks-with-token.md
 
