@@ -102,6 +102,7 @@ nav:
   - Plugins & Commerce:
       - WooCommerce Plugin: woocommerce-plugin.md
       - Xero: xero.md
+      - Zoho CRM: zoho.md
   - Tools & Operations:
       - Check Payments with Token: other/checks-with-token.md
 
