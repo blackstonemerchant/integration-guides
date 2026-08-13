@@ -10,21 +10,21 @@ install: ## Install dependencies using uv
 	@uv sync --all-groups --all-extras
 
 serve: install ## Start development server with live reload
-	@echo "🚀 Starting Material for MkDocs development server..."
+	@echo "🚀 Starting Zensical development server..."
 	@echo "🌐 Documentation will be available at http://127.0.0.1:8000"
 	@echo "📝 Auto-reload enabled - edit files and see changes instantly"
 	@echo "❌ Press Ctrl+C to stop the server"
 	@echo ""
-	@uv run mkdocs serve -a 127.0.0.1:8000 -o -w .
+	@uv run zensical serve -a 127.0.0.1:8000 -o
 
 build: install ## Build documentation for production
-	@echo "🏗️  Building Material for MkDocs documentation for production..."
+	@echo "🏗️  Building Zensical documentation for production..."
 	@if [ -d "site" ]; then \
 		echo "🧹 Cleaning previous build..."; \
 		rm -rf site; \
 	fi
 	@echo "🔨 Building documentation..."
-	@uv run mkdocs build
+	@uv run zensical build
 	@echo "✅ Build completed successfully!"
 	@echo "📁 Static files are in the 'site' directory"
 	@echo "🌐 You can deploy the 'site' directory to any web server"
@@ -48,7 +48,7 @@ clean: ## Clean build artifacts and cache
 
 lint: install ## Check documentation for issues
 	@echo "🔍 Checking documentation..."
-	@uv run mkdocs build --strict --verbose
+	@uv run zensical build --strict
 
 format: ## Format markdown files (if formatter is available)
 	@echo "📝 Formatting would go here (add your preferred markdown formatter)"

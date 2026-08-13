@@ -1,0 +1,147 @@
+[project]
+site_name = "Bpayd Integration Guides"
+site_description = "Developer guides for Bpayd payment integration services"
+site_author = "Blackstone Merchant Services, Inc."
+site_url = "https://blackstonemerchant.github.io/integration-guides"
+copyright = "Copyright &copy; 2026 Blackstone Merchant Services, Inc."
+
+nav = [
+  { "Home" = "index.md" },
+  { "Start Here" = [
+    { "Sandbox" = "sandbox.md" },
+  ] },
+  { "Core APIs" = [
+    { "Payment Links" = "payment-links.md" },
+    { "ATH Mobile" = "ath-mobile-payment-button.md" },
+  ] },
+  { "Digital Wallets" = [
+    { "Apple Pay" = [
+      { "Web" = "apple-pay-web.md" },
+      { "iOS" = "apple-pay-ios.md" },
+      { "Flutter" = "apple-pay-flutter.md" },
+    ] },
+    { "Google Pay" = [
+      { "Web" = "google-pay-web.md" },
+      { "Android" = "google-pay-android.md" },
+      { "Flutter" = "google-pay-flutter.md" },
+    ] },
+  ] },
+  { "Security & Authentication" = [
+    { "3D Secure" = [
+      { "Web" = "three-domain-secure.md" },
+      { "Mobile" = "three-domain-secure-mobile.md" },
+    ] },
+  ] },
+  { "Plugins & Commerce" = [
+    { "WooCommerce Plugin" = "woocommerce-plugin.md" },
+    { "Xero" = "xero.md" },
+    { "Zoho CRM" = "zoho.md" },
+  ] },
+  { "Tools & Operations" = [
+    { "Check Payments with Token" = "other/checks-with-token.md" },
+  ] },
+]
+
+extra_css = [
+  "stylesheets/extra.css",
+]
+
+extra_javascript = [
+  "javascripts/mathjax.js",
+  "https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6",
+  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
+]
+
+[project.theme]
+language = "en"
+features = [
+  "navigation.sections",
+  "navigation.expand",
+  "navigation.path",
+  "navigation.top",
+  "navigation.indexes",
+  "navigation.tracking",
+  "search.highlight",
+  "search.share",
+  "toc.follow",
+  "content.code.copy",
+  "content.code.select",
+  "content.tabs.link",
+]
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "material/brightness-4"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "material/brightness-7"
+toggle.name = "Switch to dark mode"
+
+[project.extra]
+generator = false
+
+[[project.extra.social]]
+icon = "fontawesome/solid/globe"
+link = "https://blackstonemerchant.com/"
+name = "Blackstone Merchant Services Website"
+
+[[project.extra.social]]
+icon = "fontawesome/solid/envelope"
+link = "mailto:info@blackstonemerchant.com"
+name = "Contact Us"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc = {
+  permalink = true
+}
+pymdownx.arithmatex = {
+  generic = true
+}
+pymdownx.betterem = {
+  smart_enable = "all"
+}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji = {
+  emoji_generator = "zensical.extensions.emoji.to_svg",
+  emoji_index = "zensical.extensions.emoji.twemoji",
+}
+pymdownx.highlight = {
+  anchor_linenums = true,
+  line_spans = "__span",
+  pygments_lang_class = true,
+}
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+pymdownx.superfences = {
+  custom_fences = [
+    {
+      name = "mermaid",
+      class = "mermaid",
+      format = "pymdownx.superfences.fence_code_format",
+    },
+  ],
+}
+pymdownx.tabbed = {
+  alternate_style = true,
+}
+pymdownx.tasklist = {
+  custom_checkbox = true
+}
+pymdownx.tilde = {}

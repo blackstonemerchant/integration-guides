@@ -42,12 +42,12 @@ Run `make help` to see all available commands.
 ## 📖 Writing Documentation
 
 1. Create markdown files in the `docs/` directory
-2. Update the `nav` section in `mkdocs.yml` if needed
-3. Use [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) features for enhanced formatting
+2. Update the `nav` section in `zensical.toml` if needed
+3. Use [Zensical](https://zensical.org/) features for enhanced formatting
 
 ## 🚀 Deployment
 
-The documentation is built with MkDocs and Material theme. Deploy the generated `site/` directory to your web server or use GitHub Pages.
+The documentation is built with Zensical. Deploy the generated `site/` directory to your web server or use GitHub Pages.
 
 ## 🤝 Contributing
 
@@ -59,4 +59,4 @@ The documentation is built with MkDocs and Material theme. Deploy the generated 
 
 ---
 
-Built with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) and [uv](https://github.com/astral-sh/uv)
+Built with [Zensical](https://zensical.org/) and [uv](https://github.com/astral-sh/uv)

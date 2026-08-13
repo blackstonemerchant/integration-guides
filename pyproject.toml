@@ -6,14 +6,11 @@ readme = "readme.md"
 requires-python = ">=3.12"
 
 dependencies = [
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.6.14",
-    "mkdocs-minify-plugin>=0.8.0",
-    "pymdown-extensions>=10.15",
+    "zensical>=0.0.1",
 ]
 
 [dependency-groups]
-dev = ["mkdocs-material[imaging]>=9.6.14", "ruff>=0.11.13"]
+dev = ["ruff>=0.11.13"]
 
 [build-system]
 requires = ["hatchling"]
