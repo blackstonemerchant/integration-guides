@@ -1,15 +1,15 @@
-# Apple Pay iOS Integration
+# Apple Pay Flutter Integration
 
 ## Overview
 
-This guide describes how to integrate Apple Pay with the Bpayd API for **iOS** using PassKit. It covers the merchant ID setup, front-end implementation, and the backend payment flow.
+This guide describes how to integrate Apple Pay with the Bpayd API for **Flutter** using the Flutter team official `pay` package on iOS. It covers the merchant ID setup, front-end implementation, and the backend payment flow.
 
 The integration involves two main components:
 
-1. **Front-end (iOS)**: Collecting the Apple Pay payment token using PassKit
+1. **Front-end (Flutter)**: Collecting the Apple Pay payment token using the `pay` package
 2. **Back-end**: Sending the Apple Pay token to the Bpayd API for payment processing
 
-There is no domain verification or merchant validation step for iOS — you go directly to payment authorization.
+There is no domain verification or merchant validation step for Flutter - the `pay` package wraps the native iOS Apple Pay flow and goes directly to payment authorization.
 
 ## Prerequisites
 
@@ -23,26 +23,27 @@ Before you begin, make sure you have:
   - `mid`: Merchant ID
   - `cid`: Cashier ID
 - **Apple Pay enablement from Bpayd**: Apple Pay is enabled for your merchant in Bpayd.
-- **Apple Developer Program account** with Apple Pay capability enabled in Xcode.
+- **Flutter app with iOS target enabled** (Apple Pay works on iOS only).
+- **`pay` package** added to `pubspec.yaml`.
+- **Apple Pay configuration JSON** file (for example, `assets/apple_pay.json`) registered in `pubspec.yaml`.
 - **Your own Apple Pay Merchant ID** registered in your Apple Developer account (see [Merchant ID Setup](#merchant-id-setup) below).
 - **Payment Processing Certificate** created using a CSR generated from the Bpayd Merchants Portal (see [Merchant ID Setup](#merchant-id-setup) below).
-- **Test device** with Apple Pay set up (or Apple Pay sandbox test cards).
-- Official iOS documentation:
-  - Setting up Apple Pay: <https://developer.apple.com/documentation/passkit/setting-up-apple-pay>
-  - Offering Apple Pay in your app: <https://developer.apple.com/documentation/passkit/offering-apple-pay-in-your-app>
+- **Apple Pay capability** enabled in the iOS Runner target with your merchant identifier.
+- Official Flutter resources:
+  - `pay` package: <https://pub.dev/packages/pay>
+  - Example payment configuration: <https://github.com/google-pay/flutter-plugin/blob/main/pay/example/lib/payment_configurations.dart>
 
 ## Integration Flow
 
-The complete Apple Pay in-app flow consists of these steps:
+Flutter uses the iOS Apple Pay flow under the hood. The steps are:
 
-1. The customer taps the Apple Pay button in your iOS app.
-2. Your app builds a `PKPaymentRequest` and presents a `PKPaymentAuthorizationController`.
-3. The customer authorizes the payment with Face ID, Touch ID, or passcode.
-4. iOS returns a payment token (`payment.token.paymentData`).
-5. Your app sends the payment token to your back-end.
-6. Your back-end Base64-encodes the token and calls the Bpayd API `SaleWithApplePay` endpoint.
-7. Bpayd processes the payment and returns the result.
-8. Your app displays the payment result to the customer.
+1. The customer taps the Apple Pay button rendered by the `pay` package.
+2. The package presents the Apple Pay sheet and collects authorization.
+3. `onPaymentResult` returns the Apple Pay token payload.
+4. Your app sends the token payload to your back-end.
+5. Your back-end Base64-encodes the token and calls the Bpayd API `SaleWithApplePay` endpoint.
+6. Bpayd processes the payment and returns the result.
+7. Your app displays the payment result to the customer.
 
 ## Responsibilities
 
@@ -56,9 +57,10 @@ The complete Apple Pay in-app flow consists of these steps:
 ### Your application is responsible for
 
 - Creating your own Apple Pay Merchant ID and Payment Processing Certificate using the CSR from the Merchants Portal (see [Merchant ID Setup](#merchant-id-setup)).
-- Enabling Apple Pay capability and adding your merchant identifier in Xcode.
-- Building the Apple Pay in-app flow with PassKit (`PKPaymentRequest`, `PKPaymentAuthorizationController`).
-- Forwarding the Apple Pay token (`payment.token.paymentData`) to your back-end exactly as received from Apple.
+- Enabling Apple Pay capability in the iOS Runner target and adding your merchant identifier.
+- Defining the Apple Pay payment configuration JSON and loading it with `PaymentConfiguration.fromAsset`.
+- Presenting an `ApplePayButton` (or `PayButton`) and handling `onPaymentResult`.
+- Forwarding the Apple Pay token payload to your back-end exactly as received.
 - Base64-encoding the token on the back-end before sending it to Bpayd.
 - Generating a unique `UserTransactionNumber` for each transaction.
 
@@ -102,7 +104,7 @@ For in-app Apple Pay, you must use your own Apple Pay Merchant ID registered in 
 
 Add the Apple Pay capability in Xcode and select your Merchant ID (the one you created in step 2).
 
-In your entitlements (or via Xcode > Signing & Capabilities > Apple Pay):
+In your `Runner.entitlements` (or via Xcode > Signing & Capabilities > Apple Pay):
 
 ```xml
 <key>com.apple.developer.in-app-payments</key>
@@ -114,70 +116,71 @@ In your entitlements (or via Xcode > Signing & Capabilities > Apple Pay):
 ## Front-End Implementation
 
 > [!NOTE]
-> **Disclaimer**: The following iOS implementation is provided as a **reference guide**. Your actual implementation may vary depending on your app architecture. You should adapt these examples to fit your needs rather than copying them verbatim.
+> **Disclaimer**: The following Flutter implementation is provided as a **reference guide**. Your actual implementation may vary depending on your app architecture. You should adapt these examples to fit your needs rather than copying them verbatim.
 
-On iOS, you integrate Apple Pay using PassKit (`PKPaymentRequest` and `PKPaymentAuthorizationController`).
+Flutter's official `pay` package wraps the native Apple Pay flow on iOS.
 
-### 1. Configure the Apple Pay capability
+### 1. Add the package and configuration file
 
-- In Xcode, add the Apple Pay capability and include your own merchant identifier.
-- Confirm that your supported networks and merchant capabilities match your Bpayd configuration.
+- Add the `pay` package to `pubspec.yaml` and run `flutter pub get`.
+- Create an Apple Pay configuration JSON file (for example, `assets/apple_pay.json`) and register it in `pubspec.yaml`.
 
-### 2. Create and present the payment sheet
+```yaml
+dependencies:
+pay: ^x.y.z # use the latest version from pub.dev
 
-At a high level:
+flutter:
+assets:
+    - assets/apple_pay.json
+```
 
-1. Check `PKPaymentAuthorizationController.canMakePayments(usingNetworks:)`.
-2. Build a `PKPaymentRequest` with total, currency, country, supported networks, and merchant capabilities.
-3. Present a `PKPaymentAuthorizationController`.
-4. When authorized, send `payment.token.paymentData` to your backend as a JSON string.
+### 2. Define the Apple Pay configuration
 
-### Minimal Swift example
-
-```swift
-import PassKit
-
-final class CheckoutViewController: UIViewController, PKPaymentAuthorizationControllerDelegate {
-    func beginApplePay() {
-        let networks: [PKPaymentNetwork] = [.visa, .masterCard, .amex, .discover]
-        guard PKPaymentAuthorizationController.canMakePayments(usingNetworks: networks) else {
-            return
-        }
-
-        let request = PKPaymentRequest()
-        request.merchantIdentifier = "merchant.com.yourcompany.yourapp" // Your own merchant ID
-        request.countryCode = "US"
-        request.currencyCode = "USD"
-        request.supportedNetworks = networks
-        request.merchantCapabilities = [.threeDS]
-        request.paymentSummaryItems = [
-            PKPaymentSummaryItem(
-                label: "Your Business Name", amount: NSDecimalNumber(string: "10.50"))
-        ]
-
-        let controller = PKPaymentAuthorizationController(paymentRequest: request)
-        controller.delegate = self
-        controller.present(completion: nil)
-    }
-
-    func paymentAuthorizationController(
-        _ controller: PKPaymentAuthorizationController, didAuthorizePayment payment: PKPayment,
-        handler completion: @escaping (PKPaymentAuthorizationResult) -> Void
-    ) {
-        guard let tokenString = String(data: payment.token.paymentData, encoding: .utf8) else {
-            completion(PKPaymentAuthorizationResult(status: .failure, errors: nil))
-            return
-        }
-
-        // Send tokenString to your backend and call completion based on the result.
-        completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
-    }
-
-    func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
-        controller.dismiss(completion: nil)
+```json
+{
+    "provider": "apple_pay",
+    "data": {
+        "merchantIdentifier": "merchant.com.yourcompany.yourapp",
+        "displayName": "Your Business Name",
+        "merchantCapabilities": ["3DS"],
+        "supportedNetworks": ["visa", "masterCard", "amex", "discover"],
+        "countryCode": "US",
+        "currencyCode": "USD"
     }
 }
 ```
+
+### 3. Present the Apple Pay button and handle the token
+
+```dart
+import 'package:pay/pay.dart';
+
+final applePayConfig = PaymentConfiguration.fromAsset('assets/apple_pay.json');
+
+final paymentItems = [
+    PaymentItem(
+        label: 'Your Business Name',
+        amount: '10.50',
+        status: PaymentItemStatus.final_price,
+    ),
+];
+
+ApplePayButton(
+    paymentConfiguration: applePayConfig,
+    paymentItems: paymentItems,
+    style: ApplePayButtonStyle.black,
+    type: ApplePayButtonType.buy,
+    onPaymentResult: (result) {
+        final tokenPayload = result['token'] ?? result;
+        // Serialize tokenPayload to JSON and send it to your backend.
+    },
+    onError: (error) {
+        // Handle UI errors.
+    },
+);
+```
+
+Make sure your iOS Runner target includes the Apple Pay capability and your own merchant identifier in Xcode.
 
 ## Back-End Implementation
 
@@ -202,11 +205,11 @@ For the full list of supported fields and detailed schema for `SaleWithApplePay`
 
 ### Important: Token encoding
 
-The Apple Pay token you receive from PassKit is a JSON payload (`payment.token.paymentData`). **Before sending it to the Bpayd API, you must Base64-encode it** and place the result in the `Token` field of the request.
+The Apple Pay token you receive from the `pay` package is the `onPaymentResult` payload. **Before sending it to the Bpayd API, you must Base64-encode it** and place the result in the `Token` field of the request.
 
 The typical sequence is:
 
-1. On the front end, obtain the Apple Pay token and convert it to a UTF-8 string from `payment.token.paymentData`.
+1. On the front end, obtain the Apple Pay token payload from `onPaymentResult` and serialize it to a JSON string.
 2. Send that JSON string to your back-end.
 3. On the back-end, Base64-encode the JSON string and assign the result to the `Token` field in the `SaleWithApplePay` request body.
 
@@ -239,11 +242,11 @@ Use the **Apple Pay sandbox** when testing your integration, and set `IsTest: tr
 
 ## Summary
 
-Integrating Apple Pay on iOS with Bpayd API involves:
+Integrating Apple Pay with Flutter and Bpayd API involves:
 
 1. **Merchant ID setup**: Generate a CSR from the Merchants Portal, create your Apple Pay Merchant ID and Payment Processing Certificate in Apple Developer, and upload the `.cer` back to the portal.
-2. **Front-end**: Implement Apple Pay using PassKit and obtain the Apple Pay token payload.
+2. **Front-end**: Implement Apple Pay using the `pay` package with your merchant identifier and obtain the Apple Pay token payload.
 3. **Back-end**: Call `SaleWithApplePay`, Base64-encoding the Apple Pay token before sending it to Bpayd.
 4. **Handle response**: Process the result and update your application accordingly.
 
-If you also need to support Google Pay, see the Google Pay Integration Guide for [Web](google-pay-web.md), [Android](google-pay-android.md), or [Flutter](google-pay-flutter.md).
+If you also need to support Google Pay, see the Google Pay Integration Guide for [Web](../google-pay/web.md), [Android](../google-pay/android.md), or [Flutter](../google-pay/flutter.md).

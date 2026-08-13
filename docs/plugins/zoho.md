@@ -1,6 +1,6 @@
 # Zoho CRM Integration
 
-Accept credit card payments directly inside **Zoho CRM** through Blackstone. The **Blackstone Online Gateway** extension adds a payment panel to your Deals, Contacts, and Invoices, so your team can charge a card, send a payment link, and issue refunds without ever leaving a record — and every transaction is saved back to the record automatically.
+Accept credit card payments directly inside **Zoho CRM** through Blackstone. The **Blackstone Online Gateway** extension adds a payment panel to your Deals, Contacts, and Invoices, so your team can charge a card, send a payment link, and issue refunds without ever leaving a record - and every transaction is saved back to the record automatically.
 
 !!! info "How card data is handled"
     Card details are processed by Blackstone and never stored by the integration. The backend is stateless, card numbers are tokenized, and merchant credentials stay inside your own Zoho organisation. Blackstone carries the PCI-DSS compliance for card data.
@@ -9,10 +9,10 @@ Accept credit card payments directly inside **Zoho CRM** through Blackstone. The
 
 ```mermaid
 flowchart LR
-  A[Open a record<br/>in Zoho CRM] --> B[Blackstone widget<br/>Charge / Link]
-  B --> C[Blackstone charges<br/>the card]
-  C --> D[Result returned<br/>to the widget]
-  D --> E[Payment saved as<br/>a Note on the record]
+  A["Open a record<br/>in Zoho CRM"] --> B["Blackstone widget<br/>Charge / Link"]
+  B --> C["Blackstone charges<br/>the card"]
+  C --> D["Result returned<br/>to the widget"]
+  D --> E["Payment saved as<br/>a Note on the record"]
 ```
 
 1. You open a Deal, Contact, or Invoice and the Blackstone Payments widget appears.
@@ -24,7 +24,7 @@ flowchart LR
 
 | Requirement | Detail |
 |-------------|--------|
-| Zoho CRM edition | **Professional or higher** — the extension works with the Invoices module, which is not available on Free/Standard editions |
+| Zoho CRM edition | **Professional or higher** - the extension works with the Invoices module, which is not available on Free/Standard editions |
 | Blackstone credentials | AppKey, AppType, Merchant ID (MID), Cashier ID (CID), Username, Password |
 | CRM access | Administrator access to install the extension and enter credentials |
 
@@ -39,7 +39,7 @@ Search for **Blackstone Online Gateway** in the [Zoho Marketplace](https://marke
 
 ### 2. Grant permissions
 
-The extension needs to read Deals, Contacts, and Invoices, and to create and read Notes — this lets it pre-fill amounts and save your payment history. After installing, the payment widget appears automatically in the right-hand panel of the supported records.
+The extension needs to read Deals, Contacts, and Invoices, and to create and read Notes - this lets it pre-fill amounts and save your payment history. After installing, the payment widget appears automatically in the right-hand panel of the supported records.
 
 ## Configure your credentials
 
@@ -65,7 +65,7 @@ The Blackstone Payments panel shows up on the right-hand side of these records a
 | Module | What is pre-filled |
 |--------|--------------------|
 | **Deals** | Amount from the Deal amount; reference from the Deal name |
-| **Contacts** | No amount pre-fill — you enter the amount to charge |
+| **Contacts** | No amount pre-fill - you enter the amount to charge |
 | **Invoices** | Amount from the invoice total; invoice number for payment links |
 
 The widget has up to four tabs: **Charge**, **Payment Link**, **History**, and (for admins) **Config**.
@@ -74,7 +74,7 @@ The widget has up to four tabs: **Charge**, **Payment Link**, **History**, and (
 
 ### 1. Open a record and check the amount
 
-Open any Deal, Contact, or Invoice. On the **Charge** tab the amount is pre-loaded from the record — adjust it if needed.
+Open any Deal, Contact, or Invoice. On the **Charge** tab the amount is pre-loaded from the record - adjust it if needed.
 
 ### 2. Enter the card and charge
 
@@ -86,11 +86,11 @@ Type the card number, expiration, CVV, and name on card. Optionally add the bill
     In test mode, use card `4111 1111 1111 1111`, expiry `08/30`, CVV `123`, ZIP `32606`. No real money moves in sandbox.
 
 !!! note "Automatic record-keeping"
-    When a payment is approved, a Note is added to the record automatically — for example `Blackstone | $100.00 | APPROVED | VISA ****1111`. You'll find it in the History tab.
+    When a payment is approved, a Note is added to the record automatically - for example `Blackstone | $100.00 | APPROVED | VISA ****1111`. You'll find it in the History tab.
 
 ## Send a payment link
 
-Use a payment link when you want the customer to pay themselves on a secure Blackstone page — no card details are entered in the CRM.
+Use a payment link when you want the customer to pay themselves on a secure Blackstone page - no card details are entered in the CRM.
 
 ### 1. Generate the link
 
@@ -109,11 +109,11 @@ The **History** tab shows every payment made on that specific record. Open the t
 ![History tab showing an approved and a refunded transaction](images/zoho-history.png)
 
 !!! note "History is per record"
-    Each Deal, Contact, or Invoice keeps its own payment history, stored as Notes on that record — so it stays with the customer it belongs to.
+    Each Deal, Contact, or Invoice keeps its own payment history, stored as Notes on that record - so it stays with the customer it belongs to.
 
 | Status | Meaning |
 |--------|---------|
-| `APPROVED` | Payment approved — a Refund button is available |
+| `APPROVED` | Payment approved - a Refund button is available |
 | `REFUNDED` | The payment was refunded |
 | `VOIDED` | The payment was cancelled the same day |
 | `LINK` | A payment link was generated (payment still pending) |
@@ -127,7 +127,7 @@ Full and partial refunds are supported. In the **History** tab, click **Refund**
 
 ## 3-D Secure &amp; saved cards
 
-3-D Secure adds a bank verification step (such as an SMS code or a banking-app approval) before a payment goes through, reducing fraud and chargebacks. If your Blackstone account has it enabled, the customer may see a quick challenge during checkout — on payment links this is fully automatic.
+3-D Secure adds a bank verification step (such as an SMS code or a banking-app approval) before a payment goes through, reducing fraud and chargebacks. If your Blackstone account has it enabled, the customer may see a quick challenge during checkout - on payment links this is fully automatic.
 
 For repeat customers you can securely save a card for future payments. The full card number is never stored; only a secure token that represents the card is kept, so next time you can pick the saved card and charge with one click.
 
@@ -144,7 +144,7 @@ For repeat customers you can securely save a card for future payments. The full 
 | Issue | Fix |
 |-------|-----|
 | `Invalid credentials` when charging | Re-check each field in Settings and click **Test Connection**. If it still fails, verify the credentials with Blackstone. |
-| Payment declined (`Insufficient Funds`) | The customer's bank declined the charge — not a plugin error. Try another card or ask the customer to contact their bank. |
+| Payment declined (`Insufficient Funds`) | The customer's bank declined the charge - not a plugin error. Try another card or ask the customer to contact their bank. |
 | Approved but no Note on the record | The CRM profile may lack permission to create Notes. Check **Setup → Security → Profiles**. |
 | Amount not pre-filled | The record may use a custom field name in your org. Contact Blackstone support to map it. |
 | Payment link customer can't pay | The link may already be paid (one-time use), or was created in sandbox (test cards only). Generate a new link in production. |

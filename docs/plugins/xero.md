@@ -1,6 +1,6 @@
 # Xero Integration
 
-Accept credit card payments on your **Xero** invoices through Blackstone. Once your Xero organisation is connected, customers can pay an invoice online and the payment is recorded back in Xero automatically — the invoice is marked **Paid** with no manual reconciliation.
+Accept credit card payments on your **Xero** invoices through Blackstone. Once your Xero organisation is connected, customers can pay an invoice online and the payment is recorded back in Xero automatically - the invoice is marked **Paid** with no manual reconciliation.
 
 !!! info "How card data is handled"
     Card details are processed by Blackstone and never pass through Xero, and are never stored by the integration. Blackstone carries the PCI-DSS compliance for card data.
@@ -9,10 +9,10 @@ Accept credit card payments on your **Xero** invoices through Blackstone. Once y
 
 ```mermaid
 flowchart LR
-  A[Customer opens<br/>Xero invoice] --> B[Secure payment page]
-  B --> C[Blackstone charges<br/>the card]
-  C --> D[Payment recorded<br/>in Xero]
-  D --> E[Invoice marked<br/>Paid]
+  A["Customer opens<br/>Xero invoice"] --> B["Secure payment page"]
+  B --> C["Blackstone charges<br/>the card"]
+  C --> D["Payment recorded<br/>in Xero"]
+  D --> E["Invoice marked<br/>Paid"]
 ```
 
 1. The customer opens their invoice and follows the payment link.
@@ -39,7 +39,7 @@ Open the connection link provided by Blackstone (e.g. `https://api.bpayd.com/aut
 
 ### 2. Authorise access
 
-Xero shows exactly what the integration can access — Invoices, Payments, and Organisation settings. Review and click **Allow access**.
+Xero shows exactly what the integration can access - Invoices, Payments, and Organisation settings. Review and click **Allow access**.
 
 ![Xero authorisation screen](images/xero-consent.png)
 
@@ -52,7 +52,7 @@ Blackstone payments are recorded against a bank account in Xero. If you don't ha
 
 ### 1. Open the bank setup
 
-In Xero go to **Accounting → Bank accounts → Add bank account**, then click **Add without bank feed** — you don't need to connect a real bank.
+In Xero go to **Accounting → Bank accounts → Add bank account**, then click **Add without bank feed** - you don't need to connect a real bank.
 
 ![Add bank accounts in Xero](images/xero-add-bank.png)
 
@@ -96,7 +96,7 @@ Open the payment page for that invoice, enter the card details including the bil
 
 ## Confirm the payment in Xero
 
-The invoice status is now **Paid** and the amount due is `0.00`. The invoice history shows a **System Generated → Paid** entry — the integration recording the payment automatically.
+The invoice status is now **Paid** and the amount due is `0.00`. The invoice history shows a **System Generated → Paid** entry - the integration recording the payment automatically.
 
 ![Invoice marked Paid](images/xero-invoice-paid.png)
 
@@ -114,7 +114,7 @@ Full and partial refunds are supported. A refund is processed through Blackstone
 ## The "Pay Now" button
 
 !!! info "How customers pay today"
-    Share the payment link for an invoice with your customer by email or message. Once Blackstone is approved as a Xero payment provider, a **Pay Now** button appears on your invoices automatically — no link to share.
+    Share the payment link for an invoice with your customer by email or message. Once Blackstone is approved as a Xero payment provider, a **Pay Now** button appears on your invoices automatically - no link to share.
 
 ## Troubleshooting
 
@@ -122,4 +122,4 @@ Full and partial refunds are supported. A refund is processed through Blackstone
 |-------|-----|
 | `ZIP required for keyed transaction` | Blackstone requires a billing ZIP/postal code for manually keyed cards. Make sure the ZIP field is filled on the payment page. |
 | `Merchant not found` | The organisation code in the payment link doesn't match your connected organisation. Re-check the link, or reconnect. |
-| Invoice not marked as paid | The charge succeeded but recording briefly failed — the integration retries automatically in the background. Check the invoice again shortly. |
+| Invoice not marked as paid | The charge succeeded but recording briefly failed - the integration retries automatically in the background. Check the invoice again shortly. |

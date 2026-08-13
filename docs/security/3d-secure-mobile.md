@@ -238,7 +238,7 @@ Using `ApiKey` and `Token` from Step 1, run this sequence.
    </form>
    ```
 
-   **PSEUDOCODE ONLY — Fingerprint web context + callback watcher**
+   **PSEUDOCODE ONLY - Fingerprint web context + callback watcher**
    ```text
    This is pseudocode for understanding flow; it is not framework-specific production code.
 
@@ -309,7 +309,7 @@ Using `ApiKey` and `Token` from Step 1, run this sequence.
    </form>
    ```
 
-   **PSEUDOCODE ONLY — Challenge web context + callback tracking**
+   **PSEUDOCODE ONLY - Challenge web context + callback tracking**
    ```text
    This is pseudocode for understanding flow; it is not framework-specific production code.
 
@@ -384,7 +384,7 @@ Using `ApiKey` and `Token` from Step 1, run this sequence.
    * User cancellation.
    * Unrecoverable network/provider error.
 
-   **PSEUDOCODE ONLY — Polling lifecycle**
+   **PSEUDOCODE ONLY - Polling lifecycle**
    ```text
    This is pseudocode for understanding flow; it is not framework-specific production code.
 
@@ -534,7 +534,7 @@ Ready-to-send authenticate payload example:
 }
 ```
 
-**PSEUDOCODE ONLY — Build authenticate payload (reference mapping behavior)**
+**PSEUDOCODE ONLY - Build authenticate payload (reference mapping behavior)**
 ```text
 This is pseudocode for understanding flow; it is not framework-specific production code.
 
@@ -552,7 +552,7 @@ function buildThreeDsRequestFromPaymentInput(paymentInput):
   }
 ```
 
-**PSEUDOCODE ONLY — Build authenticate payload (recommended hardening)**
+**PSEUDOCODE ONLY - Build authenticate payload (recommended hardening)**
 ```text
 This is pseudocode for understanding flow; it is not framework-specific production code.
 

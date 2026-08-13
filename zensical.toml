@@ -2,43 +2,45 @@
 site_name = "Bpayd Integration Guides"
 site_description = "Developer guides for Bpayd payment integration services"
 site_author = "Blackstone Merchant Services, Inc."
-site_url = "https://blackstonemerchant.github.io/integration-guides"
+site_url = "https://blackstonemerchant.github.io/integration-guides/"
 copyright = "Copyright &copy; 2026 Blackstone Merchant Services, Inc."
 
 nav = [
   { "Home" = "index.md" },
-  { "Start Here" = [
-    { "Sandbox" = "sandbox.md" },
+  { "Getting Started" = [
+    { "Sandbox Environment" = "getting-started/sandbox.md" },
   ] },
   { "Core APIs" = [
-    { "Payment Links" = "payment-links.md" },
-    { "ATH Mobile" = "ath-mobile-payment-button.md" },
+    { "Overview" = "core-apis/index.md" },
+    { "Payment Links" = "core-apis/payment-links.md" },
+    { "ATH Mobile" = "core-apis/ath-mobile.md" },
   ] },
   { "Digital Wallets" = [
+    { "Overview" = "digital-wallets/index.md" },
     { "Apple Pay" = [
-      { "Web" = "apple-pay-web.md" },
-      { "iOS" = "apple-pay-ios.md" },
-      { "Flutter" = "apple-pay-flutter.md" },
+      { "Web" = "digital-wallets/apple-pay/web.md" },
+      { "iOS" = "digital-wallets/apple-pay/ios.md" },
+      { "Flutter" = "digital-wallets/apple-pay/flutter.md" },
     ] },
     { "Google Pay" = [
-      { "Web" = "google-pay-web.md" },
-      { "Android" = "google-pay-android.md" },
-      { "Flutter" = "google-pay-flutter.md" },
+      { "Web" = "digital-wallets/google-pay/web.md" },
+      { "Android" = "digital-wallets/google-pay/android.md" },
+      { "Flutter" = "digital-wallets/google-pay/flutter.md" },
     ] },
   ] },
-  { "Security & Authentication" = [
-    { "3D Secure" = [
-      { "Web" = "three-domain-secure.md" },
-      { "Mobile" = "three-domain-secure-mobile.md" },
-    ] },
+  { "Security & 3DS" = [
+    { "Overview" = "security/index.md" },
+    { "3D Secure Web" = "security/3d-secure-web.md" },
+    { "3D Secure Mobile" = "security/3d-secure-mobile.md" },
   ] },
   { "Plugins & Commerce" = [
-    { "WooCommerce Plugin" = "woocommerce-plugin.md" },
-    { "Xero" = "xero.md" },
-    { "Zoho CRM" = "zoho.md" },
+    { "Overview" = "plugins/index.md" },
+    { "WooCommerce" = "plugins/woocommerce.md" },
+    { "Xero" = "plugins/xero.md" },
+    { "Zoho CRM" = "plugins/zoho.md" },
   ] },
   { "Tools & Operations" = [
-    { "Check Payments with Token" = "other/checks-with-token.md" },
+    { "Check Payments with Token" = "operations/checks-with-token.md" },
   ] },
 ]
 
@@ -46,13 +48,8 @@ extra_css = [
   "stylesheets/extra.css",
 ]
 
-extra_javascript = [
-  "javascripts/mathjax.js",
-  "https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6",
-  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
-]
-
 [project.theme]
+custom_dir = "overrides"
 language = "en"
 features = [
   "navigation.sections",
@@ -66,7 +63,9 @@ features = [
   "toc.follow",
   "content.code.copy",
   "content.code.select",
+  "content.code.annotate",
   "content.tabs.link",
+  "content.tooltips",
 ]
 
 [[project.theme.palette]]
