@@ -251,7 +251,7 @@ At a minimum, your request must include:
 
 `UserTransactionNumber` must be **unique per transaction** and is used by Bpayd for transaction tracking and idempotency.
 
-For the full list of supported fields and detailed schema for `SaleWithGooglePay`, refer to the official Bpayd API documentation at [documentation.bmspay.com](https://documentation.bmspay.com/).
+For the full list of supported fields and detailed schema for `SaleWithGooglePay`, refer to the [Bpayd API Reference](../../core-apis/api-reference/).
 
 ### Important: Token encoding
 
@@ -292,7 +292,7 @@ Even though these wrappers are accepted, new integrations should send the direct
 }
 ```
 
-For the full list of supported fields, refer to the official Bpayd API documentation at [documentation.bmspay.com](https://documentation.bmspay.com/).
+For the full list of supported fields, refer to the [Bpayd API Reference](../../core-apis/api-reference/).
 
 ## Testing
 

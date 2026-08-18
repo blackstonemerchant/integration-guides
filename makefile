@@ -1,4 +1,4 @@
-.PHONY: help install serve build clean lint format check-deps
+.PHONY: help install generate-api-reference serve build clean lint format check-deps
 
 # Default target
 help: ## Show this help message
@@ -9,7 +9,11 @@ install: ## Install dependencies using uv
 	@echo "📦 Installing dependencies with uv..."
 	@uv sync --all-groups --all-extras
 
-serve: install ## Start development server with live reload
+generate-api-reference: ## Generate native API reference pages from Swagger/OpenAPI
+	@echo "📚 Generating API reference from Swagger/OpenAPI..."
+	@uv run scripts/generate_api_reference.py
+
+serve: install generate-api-reference ## Start development server with live reload
 	@echo "🚀 Starting Zensical development server..."
 	@echo "🌐 Documentation will be available at http://127.0.0.1:8000"
 	@echo "📝 Auto-reload enabled - edit files and see changes instantly"
@@ -17,7 +21,7 @@ serve: install ## Start development server with live reload
 	@echo ""
 	@uv run zensical serve -a 127.0.0.1:8000 -o
 
-build: install ## Build documentation for production
+build: install generate-api-reference ## Build documentation for production
 	@echo "🏗️  Building Zensical documentation for production..."
 	@if [ -d "site" ]; then \
 		echo "🧹 Cleaning previous build..."; \
@@ -41,12 +45,13 @@ build: install ## Build documentation for production
 clean: ## Clean build artifacts and cache
 	@echo "🧹 Cleaning build artifacts..."
 	@rm -rf site/
+	@rm -rf docs/core-apis/api-reference/
 	@rm -rf .venv/
 	@find . -name "*.pyc" -delete
 	@find . -name "__pycache__" -delete
 	@echo "✅ Clean completed!"
 
-lint: install ## Check documentation for issues
+lint: install generate-api-reference ## Check documentation for issues
 	@echo "🔍 Checking documentation..."
 	@uv run zensical build --strict
 
@@ -70,4 +75,4 @@ dev-setup: ## Complete development environment setup
 # Quick aliases
 s: serve ## Alias for serve
 b: build ## Alias for build
-c: clean ## Alias for clean 
+c: clean ## Alias for clean

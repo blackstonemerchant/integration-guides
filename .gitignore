@@ -1,6 +1,9 @@
 # MkDocs build output
 site/
 
+# Generated API reference
+docs/core-apis/api-reference/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -41,4 +44,4 @@ Desktop.ini
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp

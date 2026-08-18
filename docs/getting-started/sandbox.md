@@ -4,7 +4,7 @@ The sandbox provides merchants with an environment to perform tests. It consists
 
 ## API Testing
 
-From the API, you can perform transactions using the same credentials as live transactions, but you must mark them as `IsTest` true in the request. For more details on API requests, refer to the [API Documentation](https://documentation.bmspay.com/index.html).
+From the API, you can perform transactions using the same credentials as live transactions, but you must mark them as `IsTest` true in the request. For more details on API requests, refer to the [API Reference](../core-apis/api-reference/).
 
 ![IsTest Property in API Request](images/sandbox-istest-property.png)
 

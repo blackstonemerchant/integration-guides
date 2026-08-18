@@ -1,4 +1,4 @@
-# Bpayd Integration Guides
+# Bpayd Documentation
 
 📚 Developer documentation for Bpayd payment integration services.
 
@@ -38,12 +38,15 @@ Run `make help` to see all available commands.
 - `make serve` (alias: `make s`) - Start development server
 - `make build` (alias: `make b`) - Build documentation
 - `make clean` (alias: `make c`) - Clean build artifacts
+- `make generate-api-reference` - Regenerate native API pages from Swagger/OpenAPI
 
 ## 📖 Writing Documentation
 
 1. Create markdown files in the `docs/` directory
 2. Update the `nav` section in `zensical.toml` if needed
 3. Use [Zensical](https://zensical.org/) features for enhanced formatting
+
+The API reference under `docs/core-apis/api-reference/` is generated and must not be edited manually. `make serve`, `make build`, and `make lint` refresh it from `https://services.bmspay.com/swagger/docs/v1` before Zensical runs.
 
 ## 🚀 Deployment
 

@@ -8,6 +8,14 @@ Bpayd Core APIs enable direct, server-to-server and hosted checkout capabilities
 
 <div class="grid cards" markdown>
 
+-   :material-api:{ .lg .middle } __API Reference__
+
+    ---
+
+    Explore the complete live API contract, including endpoints, request fields, response models, and examples.
+
+    [:octicons-arrow-right-24: Open API Reference](api-reference/)
+
 -   :material-link-variant:{ .lg .middle } __Payment Links__
 
     ---

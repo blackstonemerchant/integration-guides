@@ -3,7 +3,7 @@
 Welcome to the **Blackstone Merchant Services (Bpayd)** developer documentation. Here you will find step-by-step integration guides, SDK examples, and testing tools to accept and process payments securely.
 
 [🚀 Explore Sandbox](getting-started/sandbox.md){ .md-button .md-button--primary }
-[📖 API Reference](https://documentation.bmspay.com/index.html){ .md-button target="_blank" }
+[📖 API Reference](core-apis/api-reference/){ .md-button }
 
 ---
 
@@ -172,9 +172,9 @@ Select your development environment to find the relevant guides and code samples
 
 -   :material-book-open-page-variant: __API Reference__
 
-    Complete REST API specifications and endpoints.
+    Browse the live REST API contract, request fields, response models, and examples.
 
-    [:octicons-link-external-24: documentation.bmspay.com](https://documentation.bmspay.com/index.html){:target="_blank"}
+    [:octicons-arrow-right-24: Explore the API](core-apis/api-reference/)
 
 -   :material-heart-pulse: __API Status__
 

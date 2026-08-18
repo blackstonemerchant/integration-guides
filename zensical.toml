@@ -1,8 +1,8 @@
 [project]
-site_name = "Bpayd Integration Guides"
+site_name = "Bpayd Documentation"
 site_description = "Developer guides for Bpayd payment integration services"
 site_author = "Blackstone Merchant Services, Inc."
-site_url = "https://blackstonemerchant.github.io/integration-guides/"
+site_url = "https://documentation.bmspay.com/"
 copyright = "Copyright &copy; 2026 Blackstone Merchant Services, Inc."
 
 nav = [
@@ -12,6 +12,26 @@ nav = [
   ] },
   { "Core APIs" = [
     { "Overview" = "core-apis/index.md" },
+    { "API Reference" = [
+      { "Overview" = "core-apis/api-reference/index.md" },
+      { "Transactions" = "core-apis/api-reference/transactions.md" },
+      { "Report" = "core-apis/api-reference/report.md" },
+      { "Reporting" = "core-apis/api-reference/reporting.md" },
+      { "Payment Links" = "core-apis/api-reference/payment-links.md" },
+      { "Business Settings" = "core-apis/api-reference/business-settings.md" },
+      { "Authentication" = "core-apis/api-reference/auth.md" },
+      { "Recurring Billing" = "core-apis/api-reference/recurring-billing.md" },
+      { "ACH Processor" = "core-apis/api-reference/ach-processor.md" },
+      { "Check Processor" = "core-apis/api-reference/check-processor.md" },
+      { "EBT Transactions" = "core-apis/api-reference/ebt-transactions.md" },
+      { "Gift Card" = "core-apis/api-reference/gift-card.md" },
+      { "Customers" = "core-apis/api-reference/customers.md" },
+      { "Administration" = "core-apis/api-reference/administration.md" },
+      { "Fraud Auto Deny Options" = "core-apis/api-reference/fraud-auto-deny-options.md" },
+      { "Monetra Admin" = "core-apis/api-reference/monetra-admin.md" },
+      { "Signature Capture" = "core-apis/api-reference/signature-capture.md" },
+      { "Schemas" = "core-apis/api-reference/schemas.md" },
+    ] },
     { "Payment Links" = "core-apis/payment-links.md" },
     { "ATH Mobile" = "core-apis/ath-mobile.md" },
   ] },

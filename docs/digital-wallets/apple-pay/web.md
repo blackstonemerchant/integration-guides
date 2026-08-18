@@ -339,7 +339,7 @@ At a minimum, your request must include:
 
 `UserTransactionNumber` must be **unique per transaction** and is used by Bpayd for transaction tracking and idempotency.
 
-For the full list of supported fields and detailed schema for `SaleWithApplePay`, refer to the official Bpayd API documentation at [documentation.bmspay.com](https://documentation.bmspay.com/).
+For the full list of supported fields and detailed schema for `SaleWithApplePay`, refer to the [Bpayd API Reference](../../core-apis/api-reference/).
 
 ### Important: Token encoding
 
@@ -370,7 +370,7 @@ The typical sequence is:
 }
 ```
 
-For the full list of supported fields, refer to the official Bpayd API documentation at [documentation.bmspay.com](https://documentation.bmspay.com/).
+For the full list of supported fields, refer to the [Bpayd API Reference](../../core-apis/api-reference/).
 
 ### Merchant validation endpoint
 
@@ -391,7 +391,7 @@ At a high level:
 - Bpayd performs the domain checks and calls Apple's servers.
 - The response contains the **merchant session** object that your front-end must pass to `session.completeMerchantValidation`.
 
-For the exact schema of the `ValidateApplePayMerchant` request and response, refer to [documentation.bmspay.com](https://documentation.bmspay.com/).
+For the exact schema of the `ValidateApplePayMerchant` request and response, refer to the [Bpayd API Reference](../../core-apis/api-reference/).
 
 ## Testing
 
