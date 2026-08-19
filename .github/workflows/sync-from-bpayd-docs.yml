@@ -20,12 +20,12 @@ jobs:
 
     steps:
       - name: Check out destination repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Check out private source repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: CyC-miami/bpayd-docs
           ref: main
