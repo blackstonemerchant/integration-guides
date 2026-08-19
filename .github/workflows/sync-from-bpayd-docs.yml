@@ -1,0 +1,90 @@
+name: Sync from bpayd-docs
+
+on:
+  schedule:
+    # Daily at 06:17 UTC (00:17 in Mexico City during standard time).
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bpayd-docs-mirror
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Mirror private documentation repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out destination repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check out private source repository
+        uses: actions/checkout@v4
+        with:
+          repository: CyC-miami/bpayd-docs
+          ref: main
+          path: _bpayd_docs_source
+          ssh-key: ${{ secrets.BPAYD_DOCS_DEPLOY_KEY }}
+          persist-credentials: false
+
+      - name: Mirror source files
+        id: mirror
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          source_sha="$(git -C _bpayd_docs_source rev-parse HEAD)"
+          sync_workflow="$RUNNER_TEMP/sync-from-bpayd-docs.yml"
+          cp .github/workflows/sync-from-bpayd-docs.yml "$sync_workflow"
+
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='_bpayd_docs_source/' \
+            _bpayd_docs_source/ ./
+
+          rm -rf _bpayd_docs_source
+          rm -rf .github/workflows
+          mkdir -p .github/workflows
+          cp "$sync_workflow" .github/workflows/sync-from-bpayd-docs.yml
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "source_sha=$source_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push synchronized files
+        if: steps.mirror.outputs.changed == 'true'
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ steps.mirror.outputs.source_sha }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: sync from CyC-miami/bpayd-docs@${SOURCE_SHA:0:12}"
+          git push origin HEAD:main
+
+      - name: Write job summary
+        if: always() && steps.mirror.outcome == 'success'
+        shell: bash
+        env:
+          CHANGED: ${{ steps.mirror.outputs.changed }}
+          SOURCE_SHA: ${{ steps.mirror.outputs.source_sha }}
+        run: |
+          {
+            echo "## bpayd-docs mirror"
+            echo
+            echo "- Source commit: \`$SOURCE_SHA\`"
+            echo "- Destination changed: \`$CHANGED\`"
+            echo "- Source workflows are intentionally excluded."
+          } >> "$GITHUB_STEP_SUMMARY"
