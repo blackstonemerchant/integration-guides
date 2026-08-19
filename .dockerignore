@@ -1,0 +1,10 @@
+.git
+.github
+.cache
+.ruff_cache
+.venv
+site
+docs/core-apis/api-reference
+__pycache__
+*.pyc
+*.log

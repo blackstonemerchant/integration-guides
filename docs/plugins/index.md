@@ -32,12 +32,4 @@ Pre-built plugins and extensions allow you to connect Blackstone payment process
 
     [:octicons-arrow-right-24: Zoho CRM Guide](zoho.md)
 
--   :material-credit-card-outline:{ .lg .middle } __GoHighLevel__
-
-    ---
-
-    Add Blackstone as a custom payment provider in GoHighLevel so clients can pay their invoices by card, with automatic reconciliation and refunds.
-
-    [:octicons-arrow-right-24: GoHighLevel Guide](ghl.md)
-
 </div>

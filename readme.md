@@ -50,7 +50,21 @@ The API reference under `docs/core-apis/api-reference/` is generated and must no
 
 ## 🚀 Deployment
 
-The documentation is built with Zensical. Deploy the generated `site/` directory to your web server or use GitHub Pages.
+The documentation is built with Zensical and deployed with Dokploy.
+
+### Dokploy
+
+Create an **Application** connected to the private `CyC-miami/bpayd-docs` repository and configure:
+
+- Branch: `main`
+- Build type: `Dockerfile`
+- Dockerfile path: `Dockerfile`
+- Container port: `8080`
+- Health check path: `/healthz`
+- Domain: `documentation.bmspay.com`
+- Domain path: `/`
+
+The Docker build downloads the published Swagger/OpenAPI contract, generates the native API reference, runs a strict Zensical build, and copies the resulting static site into a minimal Caddy image. The default OpenAPI source is `https://services.bmspay.com/swagger/docs/v1`; it can be overridden with the `BPAYD_OPENAPI_SOURCE` Docker build argument.
 
 ## 🤝 Contributing
 

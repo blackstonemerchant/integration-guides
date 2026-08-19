@@ -58,7 +58,6 @@ nav = [
     { "WooCommerce" = "plugins/woocommerce.md" },
     { "Xero" = "plugins/xero.md" },
     { "Zoho CRM" = "plugins/zoho.md" },
-    { "GoHighLevel" = "plugins/ghl.md" },
   ] },
   { "Tools & Operations" = [
     { "Check Payments with Token" = "operations/checks-with-token.md" },

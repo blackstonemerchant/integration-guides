@@ -1,0 +1,26 @@
+{
+    admin off
+    auto_https off
+}
+
+:8080 {
+    handle /healthz {
+        respond "ok" 200
+    }
+
+    root * /srv
+    encode zstd gzip
+
+    @static path /assets/* /images/* /stylesheets/* /downloads/*
+    header @static Cache-Control "public, max-age=604800"
+
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    try_files {path} {path}/index.html
+    file_server
+}
